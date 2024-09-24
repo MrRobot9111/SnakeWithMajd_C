@@ -6,22 +6,32 @@
 #include <stdlib.h>  
 #include <crtdbg.h>
 
-class SimpleCircle
+class SimpleRectangle
 {
 private:
-    sf::CircleShape _shape;
+    sf::RectangleShape _shape;
     sf::Vector2f _position;
 
 public:
-    SimpleCircle(float radius, sf::Color color, float startX = 0.0f, float startY = 0.0f)
+
+    SimpleRectangle(float width, float height, float startX = 0.0f, float startY = 0.0f)
     {
-        _shape.setRadius(radius);
-        _shape.setFillColor(color);
+        _shape.setSize(sf::Vector2f(width, height));
         _position.x = startX;
         _position.y = startY;
     }
 
-    ~SimpleCircle()
+    SimpleRectangle(float width, float height, sf::Texture texturePath, float startX = 0.0f, float startY = 0.0f)
+    {
+        _shape.setSize(sf::Vector2f(width, height));
+        _shape.setTexture(&texturePath);
+        _position.x = startX;
+        _position.y = startY;
+    }
+
+
+
+    ~SimpleRectangle()
     {
 
     }
@@ -31,9 +41,10 @@ public:
         win.draw(_shape);
     }
 
-    void Update()
+    void Update(int winWidth, int winHeight)
     {
-        
+        // Controlling the player
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         {
             _position.x -= 10.0f;
@@ -52,11 +63,36 @@ public:
             _position.y += 10.0f;
         }
 
+        // Check of outside window
+
+        if (_position.x > winWidth - _shape.getSize().x)
+        {
+
+            _position.x = float(winWidth - _shape.getSize().x);
+        }
+        else if (_position.x < 0)
+        {
+
+            _position.x = 0;
+        }
+
+        if (_position.y > winHeight - _shape.getSize().y)
+        {
+
+            _position.y = float(winHeight - _shape.getSize().x);
+        }
+        else if (_position.y < 0)
+        {
+
+            _position.y = 0;
+        }
+
         _shape.setPosition(_position);
     }
 };
 
-class SimpleImage
+// Arrows created with this
+class MovingObjects
 {
 private:
     sf::Sprite _sprite;
@@ -65,7 +101,7 @@ private:
     sf::Vector2f _speed;
 
 public:
-    SimpleImage(sf::Texture &texture, float startX = 0.0f, float startY = 0.0f)
+    MovingObjects(sf::Texture &texture, float startX = 0.0f, float startY = 0.0f)
     {
         _sprite.setTexture(texture);
         _position.x = startX;
@@ -78,7 +114,7 @@ public:
         _speed.y = 3;
     }
 
-    ~SimpleImage()
+    ~MovingObjects()
     {
         
     }
@@ -119,24 +155,24 @@ public:
     }
 };
 
+// Create Apples by creating a class that the arrow class will inherit from
+
+
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
     //Läs mer här: https://learn.microsoft.com/en-us/cpp/c-runtime-library/find-memory-leaks-using-the-crt-library?view=msvc-170
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    int windowWidth = 800, windowHeight = 600;
+    int windowWidth = 1200, windowHeight = 800;
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "TB Snake!");
     window.setFramerateLimit(60);
     
-    SimpleCircle circle(100, sf::Color::Red, 50, 50);
+    // Drawing square
+    SimpleRectangle snake(50, 50, 400, 500);
 
-    sf::Texture texture;
-    if (!texture.loadFromFile("img/tych.png"))
-    {
-        // error...
-    }
 
-    SimpleImage image(texture, 0, 10);
+
+
 
     while (window.isOpen())
     {
@@ -149,14 +185,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
             }
         }
 
+        // Background color - change to texture
         window.clear(sf::Color::Cyan);
-        circle.Update();
-        image.Update(windowWidth, windowHeight);
-
-        image.Draw(window);
-        circle.Draw(window);
+        snake.Update(windowWidth, windowHeight);
+        snake.Draw(window);
 
         window.display();
+
     }
     
     return 0;
