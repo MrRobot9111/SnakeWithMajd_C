@@ -91,7 +91,7 @@ public:
     }
 };
 
-// Arrows created with this
+// Arrows should be created with this
 class MovingObjects
 {
 private:
