@@ -5,6 +5,7 @@
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>  
 #include <crtdbg.h>
+#include "Snake.h"
 
 class SimpleRectangle
 {
@@ -168,10 +169,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     window.setFramerateLimit(60);
     
     // Drawing square
-    SimpleRectangle snake(50, 50, 400, 500);
-
-
-
+    // SimpleRectangle snake(50, 50, 400, 500);
+    
+    std::unique_ptr<sf::Shape> shape = std::make_unique<sf::RectangleShape>(sf::Vector2f(50, 50)); // Specify size for the rectangle
+    Snake snake(sf::Vector2f(50, 50), sf::Vector2f(400, 500), std::move(shape), 0, 1, sf::Vector2f(0, 0));
 
 
     while (window.isOpen())
@@ -187,8 +188,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
         // Background color - change to texture
         window.clear(sf::Color::Cyan);
-        snake.Update(windowWidth, windowHeight);
         snake.Draw(window);
+        snake.Update(windowWidth, windowHeight);
 
         window.display();
 

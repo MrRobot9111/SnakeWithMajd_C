@@ -1,12 +1,12 @@
 #pragma once
 #include <deque>
 
-#include "CreateObject.h"  // Include the base class
+#include "MovingObject.h"
 
 // Match each body part with the size of square in the game (10x10)
 const float SNAKE_SEGMENT_SIZE = 10.0f;
 
-class Snake : public CreateObject
+class Snake : public MovingObject
 {
 	// Definition, and implementation in .cpp file
 
@@ -20,6 +20,9 @@ private:
 	std::deque<sf::Vector2f> body;
 
 public:
-
+	Snake(sf::Vector2f size, sf::Vector2f _pos, std::unique_ptr<sf::Shape> _shape, float _rotation, float _speed, sf::Vector2f _movementDirection);
+	void Update(int screenWidth, int screenHeight);
+	void KeyboardInput(int screenWidth, int screenHeight);
+	void IsOutOfScreen(int screenWidth, int screenHeight);
 };
 
