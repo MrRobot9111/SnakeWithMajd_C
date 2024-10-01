@@ -1,10 +1,17 @@
 #include "FoodHandler.h"
 #include <random>
+#include <iostream>
+#include <filesystem>
 
 void FoodHandler::SpawnFood(int spawnAmount)
 {
-	sf::Texture texture;
-	texture.loadFromFile("img/tych.png");
+
+	if (!texture.loadFromFile("img/apple.png"))
+	{
+		std::cout << "Error: Could not load texture from path 'img/apple.png'" << std::endl;
+	}
+
+
 	for (int i = 0; i < spawnAmount; i++) 
 	{
 		Food foodApple(sf::Vector2f(50, 50), GenerateRandomCoordinates(), texture, 0);

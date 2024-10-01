@@ -6,7 +6,10 @@ class FoodHandler
 {
 public:
 	std::vector<Food> foodOnScreen;
+
+private:
 	sf::Vector2f screenSize;
+	sf::Texture texture; // Otherwise the reference will be gone
 
 public:
 	void SpawnFood(int spawnAmount);

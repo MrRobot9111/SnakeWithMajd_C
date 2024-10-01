@@ -13,21 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Depricated">
+      <UniqueIdentifier>{04f19099-41b4-4621-9130-5c24f5c01575}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Depricated">
+      <UniqueIdentifier>{bd38307f-2805-427f-b227-109d4944fb10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Snake.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CreateObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MovingObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Arrow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Food.cpp">
@@ -42,20 +36,20 @@
     <ClCompile Include="SnakeHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Snake.cpp">
+      <Filter>Source Files\Depricated</Filter>
+    </ClCompile>
+    <ClCompile Include="MovingObject.cpp">
+      <Filter>Source Files\Depricated</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateObject.cpp">
+      <Filter>Source Files\Depricated</Filter>
+    </ClCompile>
+    <ClCompile Include="Arrow.cpp">
+      <Filter>Source Files\Depricated</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Snake.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MovingObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Arrow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Food.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -67,6 +61,18 @@
     </ClInclude>
     <ClInclude Include="SnakeHandler.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CreateObject.h">
+      <Filter>Header Files\Depricated</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>Header Files\Depricated</Filter>
+    </ClInclude>
+    <ClInclude Include="MovingObject.h">
+      <Filter>Header Files\Depricated</Filter>
+    </ClInclude>
+    <ClInclude Include="Arrow.h">
+      <Filter>Header Files\Depricated</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
