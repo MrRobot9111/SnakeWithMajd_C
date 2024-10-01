@@ -6,6 +6,7 @@
 #include <stdlib.h>  
 #include <crtdbg.h>
 #include "Snake.h"
+#include "Food.h"
 
 class SimpleRectangle
 {
@@ -173,7 +174,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     
     std::unique_ptr<sf::Shape> shape = std::make_unique<sf::RectangleShape>(sf::Vector2f(50, 50)); // Specify size for the rectangle
     Snake snake(sf::Vector2f(50, 50), sf::Vector2f(400, 500), std::move(shape), 0, 1, sf::Vector2f(0, 0));
-
+    sf::Texture texture;
+    Food foodApple1(sf::Vector2f(50, 50), sf::Vector2f(60, 60), texture.loadFromFile("img/tych.png"), 0);
 
     while (window.isOpen())
     {
