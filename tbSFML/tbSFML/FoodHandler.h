@@ -10,6 +10,7 @@ public:
 
 public:
 	void SpawnFood(int spawnAmount);
-	void GenerateRandomCoordinates(); // They must be inside the screen, and not on the snake
+	sf::Vector2f GenerateRandomCoordinates(); // They must be inside the screen, and not on the snake
+	void DrawFood(sf::RenderWindow& window);
 };
 
