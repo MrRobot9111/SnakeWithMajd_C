@@ -7,10 +7,11 @@ SnakeHandler::SnakeHandler(sf::Texture& headTexture)
 
 	// Initialize the snake body with only its head
 
-    snakeHead = SnakeBody(sf::Vector2f(400, 500), 0, 1, sf::Vector2f(0, 0), headTexture);
-    snakeBody.push_back(snakeHead);
+    SnakeBody head = SnakeBody(sf::Vector2f(400, 500), 0, 1, sf::Vector2f(0, 0), headTexture);
+    snakeBody.push_back(head);
     // Change the variable to load body parts instead
     texture.loadFromFile("img/snake_head.png");
+
 }
 
 void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)

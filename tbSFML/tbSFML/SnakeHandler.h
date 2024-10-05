@@ -16,7 +16,7 @@ public:
 	sf::Texture	texture;
 
 public:
-	SnakeHandler(sf::Texture& headTexture); // Create the head inside the constructor
+	SnakeHandler(sf::Texture& headtexture); // Create the head inside the constructor
 	void Grow();
 	void Shrink(); // When it hits a power-up it can shrink
 	bool IsCollided() const; // Should not modify anything 
