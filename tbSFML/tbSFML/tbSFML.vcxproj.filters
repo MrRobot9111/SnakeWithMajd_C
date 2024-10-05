@@ -48,6 +48,9 @@
     <ClCompile Include="Arrow.cpp">
       <Filter>Source Files\Depricated</Filter>
     </ClCompile>
+    <ClCompile Include="Constants.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Food.h">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="Arrow.h">
       <Filter>Header Files\Depricated</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

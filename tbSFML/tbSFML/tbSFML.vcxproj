@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Constants.cpp" />
     <ClCompile Include="Food.cpp" />
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="CreateObject.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="SnakeHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="Food.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="CreateObject.h" />

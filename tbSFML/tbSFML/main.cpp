@@ -9,6 +9,7 @@
 #include "SnakeBody.h"
 #include "Food.h"
 #include "FoodHandler.h"
+#include "SnakeHandler.h"
 
 class SimpleRectangle
 {
@@ -175,12 +176,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     // SimpleRectangle snake(50, 50, 400, 500);
     
     std::unique_ptr<sf::Shape> shape = std::make_unique<sf::RectangleShape>(sf::Vector2f(50, 50)); // Specify size for the rectangle
-    sf::Texture texture;
 
+    sf::Texture texture;
     texture.loadFromFile("img/snake_head.png");
 
-    SnakeBody snakeBody(sf::Vector2f(50, 50), sf::Vector2f(400, 500), 0, 1, sf::Vector2f(0, 0), texture);
     FoodHandler foodHandler;
+
+    SnakeHandler snakeHandler(texture);
 
     foodHandler.SpawnFood(5);
     
@@ -198,9 +200,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
         // Background color - change to texture
         window.clear(sf::Color::Cyan);
-
-        snakeBody.Draw(window);
-        snakeBody.Update(windowWidth, windowHeight);
+        snakeHandler.Update(window, windowWidth, windowHeight);
         foodHandler.DrawFood(window);
         window.display();
 
