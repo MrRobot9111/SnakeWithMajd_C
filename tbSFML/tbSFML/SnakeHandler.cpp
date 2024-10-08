@@ -75,6 +75,9 @@ void SnakeHandler::CheckIfOutOfScreen(int screenWidth, int screenHeight)
 
 void SnakeHandler::UpdateBodyPostion() 
 {
+
+
+
     // Start from the head of the snake, and then go backwards
     for (size_t i = snakeBody.size() - 1; i > 0; --i)
     {
@@ -85,7 +88,7 @@ void SnakeHandler::UpdateBodyPostion()
         }
 
         // Move each body part to the position of the part in front of it - better than updating all the body parts direction, position etc...
-        snakeBody[i].position = snakeBody[i - 1].position; // Move to the position of the previous part
+        snakeBody[i].position = snakeBody[i - 1].position; // Move to the position of the previous part, but try to 
         snakeBody[i].sprite.setPosition(snakeBody[i].position); 
     }
 
@@ -93,14 +96,15 @@ void SnakeHandler::UpdateBodyPostion()
 
 void SnakeHandler::Grow()
 {
-
+    // Distance between body parts
+    float distanceOffeset = 20.0f;
 
     // Get the last body part (the tail)
     const SnakeBody& lastBodyPart = snakeBody.back();
 
 	// Calculate the new position based on the movement direction of the last body part - a bad idea, it is perhaps better to calculate the new position based on the last body part's position
 	// Or even better we create the new body part based on the last body part
-    sf::Vector2f adjustedNewPosition = lastBodyPart.position;
+    sf::Vector2f adjustedNewPosition = lastBodyPart.position; // This might be the solution to offset to add distance between each part of the snake
 
     // Create the new body part and add it to the snake
     SnakeBody bodyPart(adjustedNewPosition, 0, 1, lastBodyPart.movementDirection, texture);

@@ -9,7 +9,7 @@ public:
 
 private:
 	sf::Vector2f screenSize;
-	sf::Texture texture; // Otherwise the reference will be gone
+	sf::Texture* texture; // Otherwise the reference will be gone
 
 public:
 	void SpawnFood(int spawnAmount);

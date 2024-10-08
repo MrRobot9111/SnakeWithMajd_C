@@ -6,10 +6,10 @@
 void FoodHandler::SpawnFood(int spawnAmount)
 {
 
-	if (!texture.loadFromFile("img/apple.png"))
-	{
-		std::cout << "Error: Could not load texture from path 'img/apple.png'" << std::endl;
-	}
+	texture = new sf::Texture();
+	// Load texture for the head, if needed
+	texture->loadFromFile("img/apple.png");
+
 
 
 	for (int i = 0; i < spawnAmount; i++) 
