@@ -12,19 +12,21 @@ float dirY = 0;
 
 // Set an "unset" position for goalPosition
 sf::Vector2f unsetPosition(-1.0f, -1.0f);
-
+const float BODY_PART_DISTANCE = 20.0f;
 
 SnakeHandler::SnakeHandler(sf::Texture* headTexture)
 {
     // Initialize the snake body with only its head
-    SnakeBody head(sf::Vector2f(400, 500), 0, 1, sf::Vector2f(0, 0), headTexture);
+    SnakeBody head(sf::Vector2f(400, 500), 0, 1, sf::Vector2f(1, 0), headTexture);
     snakeBody.push_back(head);
 
-    sf::Vector2f distanceOffeset = sf::Vector2f(20.0f, 20.0f);
+    sf::Vector2f distanceOffeset = sf::Vector2f(50.0f, 50.0f);
 
     sf::Vector2f adjustedPosition = sf::Vector2f(distanceOffeset.x * head.movementDirection.x, distanceOffeset.y * head.movementDirection.y) + head.position;
 
-    //snakeBody.push_back(SnakeBody(adjustedPosition, 0, 1, sf::Vector2f(0, 0), headTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition, 0, 1, sf::Vector2f(1, 0), headTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition, 0, 1, sf::Vector2f(1, 0), headTexture));
+
 
     // Set snakeHead pointer to the first element of the deque
     snakeHead = &snakeBody.front(); // Use address-of operator to get a pointer
@@ -47,27 +49,41 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)
 	// Ensure that the snake cannot do a 180 degree turn from current rotation, and that it is not already traveling in that direction
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && snakeHead->movementDirection != sf::Vector2f(1, 0) && snakeHead->movementDirection != sf::Vector2f(-1, 0))
     {
+		// Store the old movement direction, and the position of the turn
+		snakeHead->previousMovementDirection = snakeHead->movementDirection;
+		snakeHead->movmentDirectionSwitchPosition = snakeHead->position;
+
         snakeHead->movementDirection = sf::Vector2f(-1, 0);
-        headTurnPositions.push_back(snakeHead->position);
         snakeHead->sprite.setRotation(90);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && snakeHead->movementDirection != sf::Vector2f(-1, 0) && snakeHead->movementDirection != sf::Vector2f(1, 0))
     {
+        // Store the old movement direction, and the position of the turn
+        snakeHead->previousMovementDirection = snakeHead->movementDirection;
+        snakeHead->movmentDirectionSwitchPosition = snakeHead->position;
+
         snakeHead->movementDirection = sf::Vector2f(1, 0);
-        headTurnPositions.push_back(snakeHead->position);
         snakeHead->sprite.setRotation(270);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && snakeHead->movementDirection != sf::Vector2f(0, 1) && snakeHead->movementDirection != sf::Vector2f(0, -1))
     {
+
+        // Store the old movement direction, and the position of the turn
+        snakeHead->previousMovementDirection = snakeHead->movementDirection;
+        snakeHead->movmentDirectionSwitchPosition = snakeHead->position;
+
         snakeHead->movementDirection = sf::Vector2f(0, -1);
-        headTurnPositions.push_back(snakeHead->position);
         snakeHead->sprite.setRotation(180);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && snakeHead->movementDirection != sf::Vector2f(0, -1) && snakeHead->movementDirection != sf::Vector2f(0, 1))
     {
+
+        // Store the old movement direction, and the position of the turn
+        snakeHead->previousMovementDirection = snakeHead->movementDirection;
+        snakeHead->movmentDirectionSwitchPosition = snakeHead->position;
+
         snakeHead->movementDirection = sf::Vector2f(0, 1);
-        headTurnPositions.push_back(snakeHead->position);
         snakeHead->sprite.setRotation(0);
     }
 
@@ -110,67 +126,75 @@ void SnakeHandler::UpdateBodyPostion()
         SnakeBody& currentPart = snakeBody[i];
         SnakeBody& nextPart = snakeBody[i - 1];
 
-        // Find out the direct to the next body part, since there can only be a difference in x or y based on the next parts previous position, therefore we need to 
-        // check the coordinates to get it working
+        // The next body part has turned
+        if (currentPart.movementDirection != nextPart.movementDirection || currentPart.movementDirection == sf::Vector2f(0.f, 0.f))
+        {
 
-        // Check the direction where the current body part should move based on the previous
-        // The previous position should be stored as a goal position, and when that position is reached (or more), the update the direct, and the new goal position
+            // sf::Vector2f distance = nextPart.movmentDirectionSwitchPosition - currentPart.position;
 
-        // Check to see if the body part has reached its goal position, if so, then update the movement direction
+			// Set the goal position of the current body part to the next's movmentDirectionSwitchPosition
 
-        // Set the movement direction based on the next body part
+            // Move the body part towards the position were the next body part has turned
+            sf::Vector2f movementStep = currentPart.movementDirection * currentPart.speed;
 
-        // Check if the current body part has reached its goalPosition
-        if (currentPart.position == currentPart.goalPosition || currentPart.goalPosition == unsetPosition) {
-            // Assign the previous part's last turn position as the goal
-            if (!headTurnPositions.empty()) {
-                currentPart.goalPosition = headTurnPositions.front();
-                currentPart.movementDirection = DetermineDirection(currentPart.position, currentPart.goalPosition);
+            // It has overshoot its goal position
+            if (currentPart.position.x + movementStep.x > nextPart.movmentDirectionSwitchPosition.x && currentPart.movementDirection.x > 0)
+            {
+
+				// Set the direction to the previous direction, so that the other body pat can follow
+                currentPart.previousMovementDirection = currentPart.movementDirection;
+
+                // Adjust to the goal position, and set the movement direction to the same as the next body part
+                currentPart.position = nextPart.movmentDirectionSwitchPosition;
+				currentPart.movementDirection = nextPart.movementDirection;
+
+                // Set the goal position of the next body part to the current's movmentDirectionSwitchPosition
+                currentPart.movmentDirectionSwitchPosition = currentPart.position;
+
             }
+
+            else if (currentPart.position.x + movementStep.x < nextPart.movmentDirectionSwitchPosition.x && currentPart.movementDirection.x < 0)
+            {
+                // Set the direction to the previous direction, so that the other body pat can follow
+                currentPart.previousMovementDirection = currentPart.movementDirection;
+
+                // Adjust to the goal position, and set the movement direction to the same as the next body part
+                currentPart.position = nextPart.movmentDirectionSwitchPosition;
+                currentPart.movementDirection = nextPart.movementDirection;
+
+                // Set the goal position of the next body part to the current's movmentDirectionSwitchPosition
+                currentPart.movmentDirectionSwitchPosition = currentPart.position;
+            }
+
+
+            if (currentPart.position.y + movementStep.y > nextPart.movmentDirectionSwitchPosition.y && currentPart.movementDirection.y > 0) {
+                // Set the direction to the previous direction, so that the other body pat can follow
+                currentPart.previousMovementDirection = currentPart.movementDirection;
+
+                // Adjust to the goal position, and set the movement direction to the same as the next body part
+                currentPart.position = nextPart.movmentDirectionSwitchPosition;
+                currentPart.movementDirection = nextPart.movementDirection;
+
+                // Set the goal position of the next body part to the current's movmentDirectionSwitchPosition
+                currentPart.movmentDirectionSwitchPosition = currentPart.position;
+            }
+
+            else if (currentPart.position.y + movementStep.y < nextPart.movmentDirectionSwitchPosition.y && currentPart.movementDirection.y < 0)
+            {
+                // Set the direction to the previous direction, so that the other body pat can follow
+                currentPart.previousMovementDirection = currentPart.movementDirection;
+
+                // Adjust to the goal position, and set the movement direction to the same as the next body part
+                currentPart.position = nextPart.movmentDirectionSwitchPosition;
+                currentPart.movementDirection = nextPart.movementDirection;
+
+                // Set the goal position of the next body part to the current's movmentDirectionSwitchPosition
+                currentPart.movmentDirectionSwitchPosition = currentPart.position;
+            }
+
         }
 
-
-        // Move the body part towards the goal position
-        sf::Vector2f movementStep = currentPart.movementDirection * currentPart.speed;
-
-        // It has overshoot its goal position
-        if (currentPart.position.x + movementStep.x > currentPart.goalPosition.x && currentPart.movementDirection.x > 0)
-        {
-            // Adjust to the goal position
-			currentPart.position = currentPart.goalPosition;
-        }
-        else if (currentPart.position.x + movementStep.x < currentPart.goalPosition.x && currentPart.movementDirection.x < 0)
-        {
-            currentPart.position = currentPart.goalPosition;
-        }
-
-        // It has overshoot its goal position
-        if (currentPart.position.y + movementStep.y > currentPart.goalPosition.y && currentPart.movementDirection.y > 0) {
-			currentPart.position = currentPart.goalPosition;
-		}
-        else if (currentPart.position.y + movementStep.y < currentPart.goalPosition.y && currentPart.movementDirection.y < 0)
-        {
-			currentPart.position = currentPart.goalPosition;
-        }
-
-		// If it is the last part of the snake, and it has reached its goals position, remove that goal position
-        if (currentPart.position == currentPart.goalPosition && snakeBody.size() - 1 == i && headTurnPositions.size() != 0)
-        {
-            headTurnPositions.pop_front();
-        }
-        else if (headTurnPositions.size() == 0) 
-        {
-			// Set the snakes current position as the goal position
-			headTurnPositions.push_back(snakeHead->position);
-        }
-
-
-        // Update before the checks - move it!!!
         snakeBody[i].position += snakeBody[i].movementDirection * snakeBody[i].speed;
-
-
-        // Move each body part to the position of the part in front of it - better than updating all the body parts direction, position etc...
-        //snakeBody[i].position = snakeBody[i - 1].position; // Move to the position of the previous part, but try to 
 
         snakeBody[i].sprite.setPosition(snakeBody[i].position); 
     }
