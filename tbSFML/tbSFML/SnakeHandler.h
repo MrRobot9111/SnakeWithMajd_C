@@ -30,5 +30,7 @@ public:
 
 	void Update(sf::RenderWindow& window, int screenWidth, int screenHeight); // Adjust the whole body's position when moving
 	void Draw(sf::RenderWindow& window); // Access the individual body parts and draw them
+	
+	void CollisionDetection();
 };
 
