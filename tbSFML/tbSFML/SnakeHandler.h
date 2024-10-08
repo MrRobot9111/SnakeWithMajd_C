@@ -13,10 +13,10 @@ class SnakeHandler
 public:
 	SnakeBody* snakeHead; 
 	std::deque<SnakeBody> snakeBody; // The first element is always the head of the snake
-	sf::Texture	texture;
+	sf::Texture* texture;
 
 public:
-	SnakeHandler(sf::Texture& headtexture); // Create the head inside the constructor
+	SnakeHandler(sf::Texture* headtexture); // Create the head inside the constructor
 	void Grow();
 	void Shrink(); // When it hits a power-up it can shrink
 	bool IsCollided() const; // Should not modify anything 

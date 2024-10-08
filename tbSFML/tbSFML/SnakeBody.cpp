@@ -9,7 +9,7 @@ SnakeBody::SnakeBody()
 }
 
 
-SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture& _texture)
+SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture)
 {
     // Check if this is correct
     speed = _speed;
@@ -17,13 +17,13 @@ SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vecto
     position = _pos;
     texture = _texture;
 
-    sprite.setTexture(texture);  // Set the texture to the sprite
+    sprite.setTexture(*texture);  // Set the texture to the sprite
 
     // Set initial scale based on the size
-    sprite.setScale(SNAKE_BODY_SIZE.x / texture.getSize().x, SNAKE_BODY_SIZE.y / texture.getSize().y);
+    sprite.setScale(SNAKE_BODY_SIZE.x / texture->getSize().x, SNAKE_BODY_SIZE.y / texture->getSize().y);
 
     // Set the origin to the center of the sprite to prevent jumping on rotation
-    sprite.setOrigin(texture.getSize().x / 2.f, texture.getSize().y / 2.f);
+    sprite.setOrigin(texture->getSize().x / 2.f, texture->getSize().y / 2.f);
 
     // Set the initial position and rotation of the sprite
     sprite.setPosition(_pos);

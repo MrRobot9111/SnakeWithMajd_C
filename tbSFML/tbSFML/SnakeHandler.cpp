@@ -2,7 +2,7 @@
 #include "SnakeBody.h"
 #include "Constants.h"
 
-SnakeHandler::SnakeHandler(sf::Texture& headTexture)
+SnakeHandler::SnakeHandler(sf::Texture* headTexture)
 {
     // Initialize the snake body with only its head
     SnakeBody head(sf::Vector2f(400, 500), 0, 1, sf::Vector2f(0, 0), headTexture);
@@ -11,8 +11,9 @@ SnakeHandler::SnakeHandler(sf::Texture& headTexture)
     // Set snakeHead pointer to the first element of the deque
     snakeHead = &snakeBody.front(); // Use address-of operator to get a pointer
 
+    texture = new sf::Texture();
     // Load texture for the head, if needed
-    texture.loadFromFile("img/snake_head.png");
+    texture->loadFromFile("img/snake_head.png");
 }
 
 void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)

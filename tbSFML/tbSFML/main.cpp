@@ -177,8 +177,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     
     std::unique_ptr<sf::Shape> shape = std::make_unique<sf::RectangleShape>(sf::Vector2f(50, 50)); // Specify size for the rectangle
 
-    sf::Texture texture;
-    texture.loadFromFile("img/snake_head.png");
+    sf::Texture* texture = new sf::Texture();
+    texture->loadFromFile("img/snake_head.png");
 
     FoodHandler foodHandler;
 
