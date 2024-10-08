@@ -27,7 +27,6 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
@@ -396,3 +395,17 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+tbSFML/bin/img/background.png
+tbSFML/bin/img/tych.png
+tbSFML/bin/openal32.dll
+tbSFML/bin/sfml-audio-2.dll
+tbSFML/bin/sfml-audio-d-2.dll
+tbSFML/bin/sfml-graphics-2.dll
+tbSFML/bin/sfml-graphics-d-2.dll
+tbSFML/bin/sfml-network-2.dll
+tbSFML/bin/sfml-network-d-2.dll
+tbSFML/bin/sfml-system-2.dll
+tbSFML/bin/sfml-system-d-2.dll
+tbSFML/bin/sfml-window-2.dll
+tbSFML/bin/sfml-window-d-2.dll
+tbSFML/bin/tbSFMLd.exe
