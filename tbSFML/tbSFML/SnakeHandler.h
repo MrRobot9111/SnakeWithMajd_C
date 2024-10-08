@@ -13,6 +13,7 @@ class SnakeHandler
 public:
 	SnakeBody* snakeHead; 
 	std::deque<SnakeBody> snakeBody; // The first element is always the head of the snake
+	std::deque<sf::Vector2f> headTurnPositions; // Store the positions of the head's turns
 	sf::Texture* texture;
 
 public:
@@ -27,10 +28,9 @@ public:
 
 	// These are handling the update of the body
 	void UpdateBodyPostion();
+	sf::Vector2f DetermineDirection(const sf::Vector2f& currentPos, const sf::Vector2f& goalPos);
 
 	void Update(sf::RenderWindow& window, int screenWidth, int screenHeight); // Adjust the whole body's position when moving
 	void Draw(sf::RenderWindow& window); // Access the individual body parts and draw them
-	
-	void CollisionDetection();
 };
 

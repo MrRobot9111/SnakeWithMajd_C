@@ -9,14 +9,14 @@ SnakeBody::SnakeBody()
 }
 
 
-SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture)
+SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture, sf::Vector2f _goalPosition)
 {
     // Check if this is correct
     speed = _speed;
     movementDirection = _movementDirection;   
     position = _pos;
     texture = _texture;
-
+	goalPosition = _goalPosition;
     sprite.setTexture(*texture);  // Set the texture to the sprite
 
     // Set initial scale based on the size
