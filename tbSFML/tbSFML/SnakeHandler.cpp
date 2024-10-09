@@ -22,10 +22,10 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture)
 
     sf::Vector2f distanceOffeset = sf::Vector2f(50.0f, 50.0f);
 
-    sf::Vector2f adjustedPosition = sf::Vector2f(distanceOffeset.x * head.movementDirection.x, distanceOffeset.y * head.movementDirection.y) + head.position;
+    sf::Vector2f adjustedPosition = head.position - sf::Vector2f(distanceOffeset.x * head.movementDirection.x, distanceOffeset.y * head.movementDirection.y) + head.position;
 
     snakeBody.push_back(SnakeBody(adjustedPosition, 0, 1, sf::Vector2f(1, 0), headTexture));
-    snakeBody.push_back(SnakeBody(adjustedPosition, 0, 1, sf::Vector2f(1, 0), headTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition - distanceOffeset, 0, 1, sf::Vector2f(1, 0), headTexture));
 
 
     // Set snakeHead pointer to the first element of the deque
@@ -41,6 +41,7 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture)
     */
 }
 
+// Add a delay so that errors do not occur
 void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)
 {
     // Update the position using the arrow operator
