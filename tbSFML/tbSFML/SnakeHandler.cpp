@@ -12,7 +12,7 @@ float dirY = 0;
 
 // Set an "unset" position for goalPosition
 sf::Vector2f unsetPosition(-1.0f, -1.0f);
-const float BODY_PART_DISTANCE = 20.0f;
+
 
 SnakeHandler::SnakeHandler(sf::Texture* headTexture)
 {
@@ -20,12 +20,12 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture)
     SnakeBody head(sf::Vector2f(400, 500), 0, 1, sf::Vector2f(1, 0), headTexture);
     snakeBody.push_back(head);
 
-    sf::Vector2f distanceOffeset = sf::Vector2f(50.0f, 50.0f);
 
-    sf::Vector2f adjustedPosition = head.position - sf::Vector2f(distanceOffeset.x * head.movementDirection.x, distanceOffeset.y * head.movementDirection.y) + head.position;
+    // Fixed this, but try more from Chat-GPT 
+    sf::Vector2f adjustedPosition = head.position - sf::Vector2f(Distance_Offset.x * head.movementDirection.x, Distance_Offset.y * head.movementDirection.y);
 
     snakeBody.push_back(SnakeBody(adjustedPosition, 0, 1, sf::Vector2f(1, 0), headTexture));
-    snakeBody.push_back(SnakeBody(adjustedPosition - distanceOffeset, 0, 1, sf::Vector2f(1, 0), headTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition - sf::Vector2f(Distance_Offset.x, 0), 0, 1, sf::Vector2f(1, 0), headTexture));
 
 
     // Set snakeHead pointer to the first element of the deque
@@ -199,23 +199,6 @@ void SnakeHandler::UpdateBodyPostion()
 
         snakeBody[i].sprite.setPosition(snakeBody[i].position); 
     }
-    /*
-    snakeBody[1].position.x += dirX;
-    snakeBody[1].position.y += dirY;
-    if (snakeBody[1].position.x > goalX)
-    {
-        snakeBody[1].position.x = goalX;
-        dirX = 0;
-        dirY = 1;
-    }
-
-    if (snakeBody[1].position.y > goalY)
-    {
-        snakeBody[1].position.y = goalY;
-        dirX = 1;
-        dirY = 0;
-    }
-    */
 
 }
 
@@ -245,7 +228,6 @@ sf::Vector2f SnakeHandler::DetermineDirection(const sf::Vector2f& currentPos, co
 void SnakeHandler::Grow()
 {
     // Distance between body parts
-    sf::Vector2f distanceOffeset = sf::Vector2f(20.0f, 20.0f);
 
     // Get the last body part (the tail)
     const SnakeBody& lastBodyPart = snakeBody.back();
@@ -253,7 +235,7 @@ void SnakeHandler::Grow()
 	// Calculate the new position based on the movement direction of the last body part - a bad idea, it is perhaps better to calculate the new position based on the last body part's position
 	// Or even better we create the new body part based on the last body part
 
-    sf::Vector2f adjustedPosition = lastBodyPart.position - sf::Vector2f(distanceOffeset.x * lastBodyPart.movementDirection.x, distanceOffeset.y * lastBodyPart.movementDirection.y) ;
+    sf::Vector2f adjustedPosition = lastBodyPart.position - sf::Vector2f(Distance_Offset.x * lastBodyPart.movementDirection.x, Distance_Offset.y * lastBodyPart.movementDirection.y) ;
     
     // Create the new body part and add it to the snake
 
@@ -261,9 +243,6 @@ void SnakeHandler::Grow()
 
     SnakeBody bodyPart(adjustedPosition, 0, 1, lastBodyPart.movementDirection, texture);
     snakeBody.push_back(bodyPart);
-	UpdateBodyPostion(); // We update the the whole body so that the new is slightly behind the old
-    // Add the new body part to the back of the snake
-
 }
 
 void SnakeHandler::Update(sf::RenderWindow& window, int screenWidth, int screenHeight)

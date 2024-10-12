@@ -4,3 +4,4 @@
 
 // Declare the constant globally
 extern const sf::Vector2f SNAKE_BODY_SIZE;
+extern const sf::Vector2f Distance_Offset;
