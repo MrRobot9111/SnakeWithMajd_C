@@ -10,6 +10,7 @@
 #include "Food.h"
 #include "FoodHandler.h"
 #include "SnakeHandler.h"
+#include "Constants.h"
 
 class SimpleRectangle
 {
@@ -168,15 +169,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     //Läs mer här: https://learn.microsoft.com/en-us/cpp/c-runtime-library/find-memory-leaks-using-the-crt-library?view=msvc-170
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    int windowWidth = 1200, windowHeight = 800;
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "TB Snake!");
+    sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "TB Snake!");
     window.setFramerateLimit(60);
     
-    // Drawing square
-    // SimpleRectangle snake(50, 50, 400, 500);
-    
-    std::unique_ptr<sf::Shape> shape = std::make_unique<sf::RectangleShape>(sf::Vector2f(50, 50)); // Specify size for the rectangle
-
     sf::Texture* texture = new sf::Texture();
     texture->loadFromFile("img/snake_head.png");
 
@@ -200,7 +195,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
         // Background color - change to texture
         window.clear(sf::Color::Cyan);
-        snakeHandler.Update(window, windowWidth, windowHeight);
+        snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y);
         foodHandler.DrawFood(window);
         window.display();
 

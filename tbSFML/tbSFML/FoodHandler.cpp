@@ -1,4 +1,5 @@
 #include "FoodHandler.h"
+#include "Constants.h"
 #include <random>
 #include <iostream>
 #include <filesystem>
@@ -14,7 +15,7 @@ void FoodHandler::SpawnFood(int spawnAmount)
 
 	for (int i = 0; i < spawnAmount; i++) 
 	{
-		Food foodApple(sf::Vector2f(50, 50), GenerateRandomCoordinates(), texture, 0);
+		Food foodApple(APPLE_SIZE, GenerateRandomCoordinates(), texture, 0);
 		foodOnScreen.push_back(foodApple);
 	}
 
