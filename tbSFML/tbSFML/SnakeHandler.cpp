@@ -2,11 +2,10 @@
 #include "SnakeBody.h"
 #include "Constants.h"
 #include "DirectionChange.h"
+#include "FoodHandler.h"
 #include <optional>
 #include <deque>
 
-
-std::deque<DirectionChange> globalDirectionChanges; // Queue of direction changes
 
 SnakeHandler::SnakeHandler(sf::Texture* headTexture)
 {
@@ -44,8 +43,6 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && snakeHead->movementDirection != sf::Vector2f(1, 0) && snakeHead->movementDirection != sf::Vector2f(-1, 0))
         {
             // Store the old movement direction, and the position of the turn
-            snakeHead->previousMovementDirection = snakeHead->movementDirection;
-            snakeHead->movmentDirectionSwitchPosition = snakeHead->position;
 
             snakeHead->movementDirection = sf::Vector2f(-1, 0);
             snakeHead->sprite.setRotation(90);
@@ -53,49 +50,37 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)
 			// Add the changes to the deque, so that the other body parts can follow
 
 			globalDirectionChanges.push_back({ snakeHead->position, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
-			snakeHead->bodyPartdirectionChanges.push_back(globalDirectionChanges.back()); // add the latest change to the body part, and the use it to update the body parts deque
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && snakeHead->movementDirection != sf::Vector2f(-1, 0) && snakeHead->movementDirection != sf::Vector2f(1, 0))
         {
-            // Store the old movement direction, and the position of the turn
-            snakeHead->previousMovementDirection = snakeHead->movementDirection;
-            snakeHead->movmentDirectionSwitchPosition = snakeHead->position;
+
 
             snakeHead->movementDirection = sf::Vector2f(1, 0);
             snakeHead->sprite.setRotation(270);
 
             // Add the changes to the deque, so that the other body parts can follow
             globalDirectionChanges.push_back({ snakeHead->position, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
-            snakeHead->bodyPartdirectionChanges.push_back(globalDirectionChanges.back()); // add the latest change to the body part, and the use it to update the body parts deque
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && snakeHead->movementDirection != sf::Vector2f(0, 1) && snakeHead->movementDirection != sf::Vector2f(0, -1))
         {
 
-            // Store the old movement direction, and the position of the turn
-            snakeHead->previousMovementDirection = snakeHead->movementDirection;
-            snakeHead->movmentDirectionSwitchPosition = snakeHead->position;
+
 
             snakeHead->movementDirection = sf::Vector2f(0, -1);
             snakeHead->sprite.setRotation(180);
 
             // Add the changes to the deque, so that the other body parts can follow
             globalDirectionChanges.push_back({ snakeHead->position, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
-            snakeHead->bodyPartdirectionChanges.push_back(globalDirectionChanges.back()); // add the latest change to the body part, and the use it to update the body parts deque
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && snakeHead->movementDirection != sf::Vector2f(0, -1) && snakeHead->movementDirection != sf::Vector2f(0, 1))
         {
-
-            // Store the old movement direction, and the position of the turn
-            snakeHead->previousMovementDirection = snakeHead->movementDirection;
-            snakeHead->movmentDirectionSwitchPosition = snakeHead->position;
 
             snakeHead->movementDirection = sf::Vector2f(0, 1);
             snakeHead->sprite.setRotation(0);
 
             // Add the changes to the deque, so that the other body parts can follow
             globalDirectionChanges.push_back({ snakeHead->position, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
-            snakeHead->bodyPartdirectionChanges.push_back(globalDirectionChanges.back()); // add the latest change to the body part, and the use it to update the body parts deque
         }
     }
 
@@ -415,35 +400,43 @@ void SnakeHandler::UpdateBodyPostion()
         // Change to the movement direction above
         currentPart.position += snakeBody[i].movementDirection * snakeBody[i].speed;
         snakeBody[i].sprite.setPosition(currentPart.position);
+        IsCollidedWithSelf(currentPart); // Check if the part has collided with the head
     }
-
-
-
-
+    // Check if the head has collided with an apple
 }
 
-sf::Vector2f SnakeHandler::DetermineDirection(const sf::Vector2f& currentPos, const sf::Vector2f& goalPos) 
+void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart)
 {
-    if (currentPos.x > goalPos.x)
+    // Check if the heads coordinates are equal or in approximation to any of the body parts
+    // This has to be done on each frame, there is no way around it
+
+    // Check the direction of the head
+    // https://www.matteboken.se/lektioner/matte-2/logik-och-geometri/avstandsformeln#!/
+    float distanceToBodyPart = sqrt(pow((snakeHead->position.x - snakeBodyPart.position.x), 2) + pow((snakeHead->position.y - snakeBodyPart.position.y), 2)); // Working since distance is 
+    // Since each body part is 50 wide and the position is based on their centers, then if the distance is less or equal to 50 there is a collision
+    if (distanceToBodyPart <= 25) // The problem is that the picture is 50x50 in size, but not the head, for the moment we should use 25
     {
-		return sf::Vector2f(-1, 0);
-    }
-    else if (currentPos.x < goalPos.x)
-    {
-        return sf::Vector2f(1, 0);
+        int x = 5;
     }
 
-    if (currentPos.y < goalPos.y)
-    {
-        return sf::Vector2f(0, 1);
-    }
-    else if (currentPos.y > goalPos.y)
-    {
-        return sf::Vector2f(0, -1);
-    }
 
-    return sf::Vector2f(0, 0);
 }
+
+void SnakeHandler::IsCollidedWithApple(FoodHandler foodHandler) 
+{
+    for (Food apple : foodHandler.foodOnScreen) 
+    {
+        float distanceToFood = sqrt(pow((snakeHead->position.x - apple.position.x), 2) + pow((snakeHead->position.y - apple.position.y), 2));
+        if (distanceToFood <= 50) // The problem is that the picture is 50x50 in size, but not the head, for the moment we should use 25
+        {
+            // Add score in the game to the player 
+            Grow();
+            // Remove the apple
+        }
+   }
+
+}
+
 
 void SnakeHandler::Grow()
 {

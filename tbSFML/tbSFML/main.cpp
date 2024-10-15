@@ -197,6 +197,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         window.clear(sf::Color::Cyan);
         snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y);
         foodHandler.DrawFood(window);
+        snakeHandler.IsCollidedWithApple(foodHandler);
         window.display();
 
     }
