@@ -29,6 +29,22 @@ sf::Vector2f FoodHandler::GenerateRandomCoordinates()
 	return sf::Vector2f(randomNumX, randomNumY);
 }
 
+
+void FoodHandler::RemoveApple(Food& food) 
+{
+	int index = 0;
+	for (Food& apple : foodOnScreen) 
+	{
+		if (apple.position == food.position) 
+		{
+			// foodOnScreen.at(index) = Food(APPLE_SIZE, GenerateRandomCoordinates(), texture, 0); // Replace with a new apple
+			foodOnScreen.erase(foodOnScreen.begin() + index);
+			return;
+		}
+		index++;
+	}
+}
+
 void FoodHandler::DrawFood(sf::RenderWindow& window)
 {
 	for(Food food : foodOnScreen) 

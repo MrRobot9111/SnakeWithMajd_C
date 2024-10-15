@@ -184,7 +184,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
     while (window.isOpen())
     {
-        sf::Event event;
+        sf::Event event; 
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -195,9 +195,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
         // Background color - change to texture
         window.clear(sf::Color::Cyan);
+        snakeHandler.IsCollidedWithApple(foodHandler); // How can the food on the screen still be 5 after the snake collided with an apple
         snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y);
         foodHandler.DrawFood(window);
-        snakeHandler.IsCollidedWithApple(foodHandler);
+
         window.display();
 
     }

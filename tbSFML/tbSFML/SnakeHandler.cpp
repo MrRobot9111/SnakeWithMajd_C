@@ -422,16 +422,21 @@ void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart)
 
 }
 
-void SnakeHandler::IsCollidedWithApple(FoodHandler foodHandler) 
+void SnakeHandler::IsCollidedWithApple(FoodHandler& foodHandler) 
 {
+    int index = 0;
     for (Food apple : foodHandler.foodOnScreen) 
     {
         float distanceToFood = sqrt(pow((snakeHead->position.x - apple.position.x), 2) + pow((snakeHead->position.y - apple.position.y), 2));
         if (distanceToFood <= 50) // The problem is that the picture is 50x50 in size, but not the head, for the moment we should use 25
         {
+
+            foodHandler.foodOnScreen.erase(foodHandler.foodOnScreen.begin() + index);
             // Add score in the game to the player 
             Grow();
+            break;
             // Remove the apple
+            //foodHandler.RemoveApple(apple);
         }
    }
 

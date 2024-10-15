@@ -23,7 +23,7 @@ public:
 	SnakeHandler(sf::Texture* headtexture); // Create the head inside the constructor
 	void Grow();
 	void Shrink(); // When it hits a power-up it can shrink
-	void IsCollidedWithApple(FoodHandler food); // Should not modify anything
+	void IsCollidedWithApple(FoodHandler& food); // Should not modify anything
 	void IsCollidedWithSelf(SnakeBody snakeBody);
 	bool KeydownTimeElapsed();
 
