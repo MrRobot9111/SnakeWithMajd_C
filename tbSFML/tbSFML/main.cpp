@@ -196,6 +196,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         // Background color - change to texture
         window.clear(sf::Color::Cyan);
         snakeHandler.IsCollidedWithApple(foodHandler); // How can the food on the screen still be 5 after the snake collided with an apple
+        foodHandler.EnsureAmountOfFoodOnScreen(5); // There will always be 5 apples on the screen
         snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y);
         foodHandler.DrawFood(window);
 

@@ -11,6 +11,7 @@ Food::Food(sf::Vector2f size, sf::Vector2f position, sf::Texture* _texture, floa
 
     // Set initial scale based on the size
     sprite.setScale(size.x / texture->getSize().x, size.y / texture->getSize().y);
+    sprite.setOrigin(texture->getSize().x / 2, texture->getSize().y / 2);
 
     // Set the initial position and rotation of the sprite
     sprite.setPosition(position);
@@ -21,4 +22,9 @@ Food::Food(sf::Vector2f size, sf::Vector2f position, sf::Texture* _texture, floa
 void Food::Draw(sf::RenderWindow& window)
 {
     window.draw(sprite); 
+}
+
+// Comparison operator
+bool Food::operator==(const Food& other) const {
+    return position == other.position;
 }

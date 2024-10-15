@@ -15,5 +15,7 @@ public:
 	void Rotate(float angleIncrement);
 	void Draw(sf::RenderWindow& window);
 
+	bool operator==(const Food& other) const; // Compare two objects
+
 };
 
