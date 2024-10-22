@@ -3,6 +3,8 @@
 #include "Constants.h"
 #include "DirectionChange.h"
 #include "FoodHandler.h"
+#include "GameStatesManager.h"
+#include "GameStatesEnum.h"
 #include <optional>
 #include <deque>
 
@@ -31,7 +33,7 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture)
 }
 
 // Add a delay so that errors do not occur
-void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)
+void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesManager* gameStatesManger )
 {
     // Update the position using the arrow operator
     snakeHead->position += snakeHead->movementDirection * snakeHead->speed;
@@ -86,36 +88,40 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)
 
 
 
-    CheckIfOutOfScreen(screenWidth, screenHeight);
+    CheckIfOutOfScreen(screenWidth, screenHeight, gameStatesManger);
 
     // Set the position of the sprite
     snakeHead->sprite.setPosition(snakeHead->position);
-	UpdateBodyPostion();
+	UpdateBodyPostion(gameStatesManger);
 }
 
-void SnakeHandler::CheckIfOutOfScreen(int screenWidth, int screenHeight)
+void SnakeHandler::CheckIfOutOfScreen(int screenWidth, int screenHeight, GameStatesManager* gameStatesManager)
 {
     // If the snake is outside the screen, then it is dead
     if (snakeHead->position.x > float(screenWidth + SNAKE_BODY_SIZE.x / 2.f))
     {
+        gameStatesManager->currentGameState = GameStatesEnum::GameOver;
         snakeHead->position.x = float(screenWidth + SNAKE_BODY_SIZE.x / 2.f);
     }
     else if (snakeHead->position.x < 0)
     {
+        gameStatesManager->currentGameState = GameStatesEnum::GameOver;
         snakeHead->position.x = 0;
     }
 
     if (snakeHead->position.y > float(screenHeight + SNAKE_BODY_SIZE.y / 2.f))
     {
+        gameStatesManager->currentGameState = GameStatesEnum::GameOver;
         snakeHead->position.y = float(screenHeight + SNAKE_BODY_SIZE.y / 2.f);
     }
     else if (snakeHead->position.y < 0)
     {
+        gameStatesManager->currentGameState = GameStatesEnum::GameOver;
         snakeHead->position.y = 0;
     }
 }
 
-void SnakeHandler::UpdateBodyPostion() 
+void SnakeHandler::UpdateBodyPostion(GameStatesManager* gameStatesManager) 
 {
 
     // Start from the end of the snake, but exclude the head, which is the first element
@@ -423,12 +429,12 @@ void SnakeHandler::UpdateBodyPostion()
         // Change to the movement direction above
         currentPart.position += snakeBody[i].movementDirection * snakeBody[i].speed;
         snakeBody[i].sprite.setPosition(currentPart.position);
-        IsCollidedWithSelf(currentPart); // Check if the part has collided with the head
+        IsCollidedWithSelf(currentPart, gameStatesManager); // Check if the part has collided with the head
     }
     // Check if the head has collided with an apple
 }
 
-void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart)
+void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart, GameStatesManager* gameStateManager)
 {
     // Check if the heads coordinates are equal or in approximation to any of the body parts
     // This has to be done on each frame, there is no way around it
@@ -439,7 +445,7 @@ void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart)
     // Since each body part is 50 wide and the position is based on their centers, then if the distance is less or equal to 50 there is a collision
     if (distanceToBodyPart <= 25) // The problem is that the picture is 50x50 in size, but not the head, for the moment we should use 25
     {
-        int x = 5;
+        gameStateManager->currentGameState = GameStatesEnum::GameOver;
     }
 
 
@@ -486,9 +492,9 @@ void SnakeHandler::Grow()
     snakeBody.push_back(bodyPart);
 }
 
-void SnakeHandler::Update(sf::RenderWindow& window, int screenWidth, int screenHeight)
+void SnakeHandler::Update(sf::RenderWindow& window, int screenWidth, int screenHeight, GameStatesManager* gameStatesManager)
 {
-    KeyboardInput(screenWidth, screenHeight);
+    KeyboardInput(screenWidth, screenHeight, gameStatesManager);
 	// Test to spawn more snake parts
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
 	{

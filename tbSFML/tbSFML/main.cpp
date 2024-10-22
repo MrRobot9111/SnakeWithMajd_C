@@ -188,8 +188,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     StartMenu menu(window.getSize().x, window.getSize().y);
 
     // Set the state of the game
-    GameStatesManager gameStatesManager;
-    gameStatesManager.SetState(GameStatesEnum::Playing);
+    GameStatesManager* gameStatesManager = new GameStatesManager();
+    gameStatesManager->SetState(GameStatesEnum::Playing);
 
     while (window.isOpen())
     {
@@ -225,26 +225,30 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
 
     
-    if (gameStatesManager.currentGameState == GameStatesEnum::MainMenu) 
-    {
-        window.clear(sf::Color::Cyan);
-        menu.draw(window);
-        window.display();
+        if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu) 
+        {
+            window.clear(sf::Color::Cyan);
+            menu.draw(window);
+            window.display();
+        }
+
+        if (gameStatesManager->currentGameState == GameStatesEnum::Playing) 
+        {
+            window.clear(sf::Color::Cyan);
+            snakeHandler.IsCollidedWithApple(foodHandler); // How can the food on the screen still be 5 after the snake collided with an apple
+            foodHandler.EnsureAmountOfFoodOnScreen(5); // There will always be 5 apples on the screen
+            snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y, gameStatesManager);
+            foodHandler.DrawFood(window);
+            window.display();
+        }
+
+        if (gameStatesManager->currentGameState == GameStatesEnum::GameOver) 
+        {
+            // 
+        }
     }
 
-    if (gameStatesManager.currentGameState == GameStatesEnum::Playing) 
-    {
-        window.clear(sf::Color::Cyan);
-        snakeHandler.IsCollidedWithApple(foodHandler); // How can the food on the screen still be 5 after the snake collided with an apple
-        foodHandler.EnsureAmountOfFoodOnScreen(5); // There will always be 5 apples on the screen
-        snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y);
-        foodHandler.DrawFood(window);
-        window.display();
-    }
-
-
-
-    }
+    delete gameStatesManager;
     
     return 0;
 }

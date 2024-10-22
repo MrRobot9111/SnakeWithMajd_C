@@ -3,6 +3,8 @@
 #include "SnakeBody.h"
 #include <deque>
 #include "FoodHandler.h"
+#include "GameStatesManager.h"
+#include "GameStatesEnum.h"
 
 
 class SnakeHandler
@@ -24,18 +26,18 @@ public:
 	void Grow();
 	void Shrink(); // When it hits a power-up it can shrink
 	void IsCollidedWithApple(FoodHandler& food); // Should not modify anything
-	void IsCollidedWithSelf(SnakeBody snakeBody);
+	void IsCollidedWithSelf(SnakeBody snakeBody, GameStatesManager* gameStateManager);
 	bool KeydownTimeElapsed();
 
 
 	// This should only be used on the head of the snake
-	void CheckIfOutOfScreen(int screenWidth, int screenHeight);
-	void KeyboardInput(int screenWidth, int screenHeight);
+	void CheckIfOutOfScreen(int screenWidth, int screenHeight, GameStatesManager* gameStateManager);
+	void KeyboardInput(int screenWidth, int screenHeight, GameStatesManager* gameStateManager);
 
 	// These are handling the update of the body
-	void UpdateBodyPostion();
+	void UpdateBodyPostion(GameStatesManager* gameStatesManager);
 
-	void Update(sf::RenderWindow& window, int screenWidth, int screenHeight); // Adjust the whole body's position when moving
+	void Update(sf::RenderWindow& window, int screenWidth, int screenHeight, GameStatesManager* gameStatesManager); // Adjust the whole body's position when moving
 	void Draw(sf::RenderWindow& window); // Access the individual body parts and draw them
 };
 
