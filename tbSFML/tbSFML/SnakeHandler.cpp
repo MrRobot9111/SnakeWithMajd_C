@@ -10,15 +10,15 @@
 SnakeHandler::SnakeHandler(sf::Texture* headTexture)
 {
     // Initialize the snake body with only its head
-    SnakeBody head(sf::Vector2f(400, 500), 0, 1, sf::Vector2f(1, 0), headTexture);
+    SnakeBody head(sf::Vector2f(400, 500), 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
     snakeBody.push_back(head);
 
 
     // Fixed this, but try more from Chat-GPT 
     sf::Vector2f adjustedPosition = head.position - sf::Vector2f(DISTANCE_OFFSET.x * head.movementDirection.x, DISTANCE_OFFSET.y * head.movementDirection.y);
 
-    snakeBody.push_back(SnakeBody(adjustedPosition, 0, 1, sf::Vector2f(1, 0), headTexture));
-    snakeBody.push_back(SnakeBody(adjustedPosition - sf::Vector2f(DISTANCE_OFFSET.x, 0), 0, 1, sf::Vector2f(1, 0), headTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition, 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition - sf::Vector2f(DISTANCE_OFFSET.x, 0), 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture));
 
 
     // Set snakeHead pointer to the first element of the deque
@@ -336,6 +336,8 @@ void SnakeHandler::UpdateBodyPostion()
 			currentPart.localDirectionChangesIndex--;
         }
 
+        // Set the rotation
+
 	    // Ensure that the index will surpass the size of the deque
         if (!globalDirectionChanges.empty() && currentPart.localDirectionChangesIndex < (globalDirectionChanges.size()))
         {
@@ -348,8 +350,13 @@ void SnakeHandler::UpdateBodyPostion()
                     currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
                     currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
 
+                    // Set the rotation
+                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
+
                     // Aim for the next point in the coming iteration
                     currentPart.localDirectionChangesIndex++;
+
+
                 }
 
                 else if (currentPart.position.x + movementStep.x < globalDirectionChanges[currentPart.localDirectionChangesIndex].position.x && currentPart.movementDirection.x < 0)
@@ -359,7 +366,12 @@ void SnakeHandler::UpdateBodyPostion()
                     currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
                     currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
 
+                    // Set the rotation
+                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
+
                     currentPart.localDirectionChangesIndex++;
+
+
 
                 }
 
@@ -372,7 +384,12 @@ void SnakeHandler::UpdateBodyPostion()
                     currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
                     currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
 
+                    // Set the rotation
+                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
+
                     currentPart.localDirectionChangesIndex++;
+
+
 
                 }
 
@@ -383,7 +400,13 @@ void SnakeHandler::UpdateBodyPostion()
                     currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
                     currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
 
+
+                    // Set the rotation
+                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
+
                     currentPart.localDirectionChangesIndex++;
+
+
                 }
 
         }
@@ -459,7 +482,7 @@ void SnakeHandler::Grow()
 
 	// Add all the pending direction changes to the body part, since they will be the same as the last body part
 
-    SnakeBody bodyPart(adjustedPosition, lastBodyPart.sprite.getRotation(), 1, lastBodyPart.movementDirection, texture);
+    SnakeBody bodyPart(adjustedPosition, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, texture);
     snakeBody.push_back(bodyPart);
 }
 

@@ -146,8 +146,10 @@
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="CreateObject.cpp" />
     <ClCompile Include="FoodHandler.cpp" />
+    <ClCompile Include="GameStatesManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovingObject.cpp" />
+    <ClCompile Include="PointAndLifeSystem.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="SnakeBody.cpp" />
     <ClCompile Include="SnakeHandler.cpp" />
@@ -160,7 +162,10 @@
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="CreateObject.h" />
     <ClInclude Include="FoodHandler.h" />
+    <ClInclude Include="GameStatesEnum.h" />
+    <ClInclude Include="GameStatesManager.h" />
     <ClInclude Include="MovingObject.h" />
+    <ClInclude Include="PointAndLifeSystem.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeBody.h" />
     <ClInclude Include="SnakeHandler.h" />

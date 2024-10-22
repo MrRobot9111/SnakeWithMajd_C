@@ -12,6 +12,8 @@
 #include "SnakeHandler.h"
 #include "StartMenu.h"
 #include "Constants.h"
+#include "GameStatesEnum.h"
+#include "GameStatesManager.h"
 
 class SimpleRectangle
 {
@@ -184,11 +186,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     foodHandler.SpawnFood(5);
 
     StartMenu menu(window.getSize().x, window.getSize().y);
-    
+
+    // Set the state of the game
+    GameStatesManager gameStatesManager;
+    gameStatesManager.SetState(GameStatesEnum::Playing);
 
     while (window.isOpen())
     {
-        sf::Event event; 
+        sf::Event event;
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -205,8 +210,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
                     break;
 
                 case sf::Keyboard::Down:
-                        menu.MoveDown();
-                        break;
+                    menu.MoveDown();
+                    break;
 
                 }
 
@@ -219,17 +224,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         }
 
 
-        // Background color - change to texture
-       
+    
+    if (gameStatesManager.currentGameState == GameStatesEnum::MainMenu) 
+    {
+        window.clear(sf::Color::Cyan);
+        menu.draw(window);
+        window.display();
+    }
 
-
+    if (gameStatesManager.currentGameState == GameStatesEnum::Playing) 
+    {
         window.clear(sf::Color::Cyan);
         snakeHandler.IsCollidedWithApple(foodHandler); // How can the food on the screen still be 5 after the snake collided with an apple
         foodHandler.EnsureAmountOfFoodOnScreen(5); // There will always be 5 apples on the screen
         snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y);
         foodHandler.DrawFood(window);
-        menu.draw(window);
         window.display();
+    }
+
 
 
     }
