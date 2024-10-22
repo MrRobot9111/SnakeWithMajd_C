@@ -2,6 +2,7 @@
 #include <vector>
 #include "SnakeBody.h"
 #include <deque>
+#include "FoodHandler.h"
 
 
 class SnakeHandler
@@ -13,13 +14,19 @@ class SnakeHandler
 public:
 	SnakeBody* snakeHead; 
 	std::deque<SnakeBody> snakeBody; // The first element is always the head of the snake
+	std::deque<DirectionChange> globalDirectionChanges; // Store the positions of the head's turns
 	sf::Texture* texture;
+private:
+	sf::Clock clock; // starts the clock
 
 public:
 	SnakeHandler(sf::Texture* headtexture); // Create the head inside the constructor
 	void Grow();
 	void Shrink(); // When it hits a power-up it can shrink
-	bool IsCollided() const; // Should not modify anything 
+	void IsCollidedWithApple(FoodHandler& food); // Should not modify anything
+	void IsCollidedWithSelf(SnakeBody snakeBody);
+	bool KeydownTimeElapsed();
+
 
 	// This should only be used on the head of the snake
 	void CheckIfOutOfScreen(int screenWidth, int screenHeight);

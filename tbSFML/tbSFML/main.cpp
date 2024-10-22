@@ -11,6 +11,7 @@
 #include "FoodHandler.h"
 #include "SnakeHandler.h"
 #include "StartMenu.h"
+#include "Constants.h"
 
 class SimpleRectangle
 {
@@ -166,18 +167,13 @@ public:
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
-    //L‰s mer h‰r: https://learn.microsoft.com/en-us/cpp/c-runtime-library/find-memory-leaks-using-the-crt-library?view=msvc-170
+    //L√§s mer h√§r: https://learn.microsoft.com/en-us/cpp/c-runtime-library/find-memory-leaks-using-the-crt-library?view=msvc-170
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    int windowWidth = 600, windowHeight = 600;
-    sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "TB Snake!");
+
+    sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "TB Snake!");
     window.setFramerateLimit(60);
     
-    // Drawing square
-    // SimpleRectangle snake(50, 50, 400, 500);
-    
-    std::unique_ptr<sf::Shape> shape = std::make_unique<sf::RectangleShape>(sf::Vector2f(50, 50)); // Specify size for the rectangle
-
     sf::Texture* texture = new sf::Texture();
     texture->loadFromFile("img/snake_head.png");
 
@@ -192,7 +188,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
     while (window.isOpen())
     {
-        sf::Event event;
+        sf::Event event; 
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -225,9 +221,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
         // Background color - change to texture
        
-       /* window.clear(sf::Color::Cyan);
-        snakeHandler.Update(window, windowWidth, windowHeight);
-        foodHandler.DrawFood(window);*/
+
+
+        window.clear(sf::Color::Cyan);
+        snakeHandler.IsCollidedWithApple(foodHandler); // How can the food on the screen still be 5 after the snake collided with an apple
+        foodHandler.EnsureAmountOfFoodOnScreen(5); // There will always be 5 apples on the screen
+        snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y);
+        foodHandler.DrawFood(window);
         menu.draw(window);
         window.display();
 

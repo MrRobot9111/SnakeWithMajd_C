@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Constants.cpp" />
+    <ClCompile Include="DirectionChange.cpp" />
     <ClCompile Include="Food.cpp" />
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="CreateObject.cpp" />
@@ -154,6 +155,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="DirectionChange.h" />
     <ClInclude Include="Food.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="CreateObject.h" />

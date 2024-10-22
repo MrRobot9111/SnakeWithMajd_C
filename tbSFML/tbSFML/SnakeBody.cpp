@@ -1,5 +1,6 @@
 #include "SnakeBody.h"
 #include "Constants.h"
+#include <optional>
 
 // Default constructor
 SnakeBody::SnakeBody()
@@ -16,7 +17,6 @@ SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vecto
     movementDirection = _movementDirection;   
     position = _pos;
     texture = _texture;
-
     sprite.setTexture(*texture);  // Set the texture to the sprite
 
     // Set initial scale based on the size
@@ -30,6 +30,8 @@ SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vecto
     sprite.setRotation(_rotation);
 
 }
+
+
 
 void SnakeBody::Update(int screenWidth, int screenHeight)
 {
