@@ -17,12 +17,13 @@ public:
 	SnakeBody* snakeHead; 
 	std::deque<SnakeBody> snakeBody; // The first element is always the head of the snake
 	std::deque<DirectionChange> globalDirectionChanges; // Store the positions of the head's turns
-	sf::Texture* texture;
+	sf::Texture* headTexture;
+	sf::Texture* bodyTexture;
 private:
 	sf::Clock clock; // starts the clock
 
 public:
-	SnakeHandler(sf::Texture* headtexture); // Create the head inside the constructor
+	SnakeHandler(sf::Texture* headtexture, sf::Texture* bodyTexture); // Create the head inside the constructor
 	void Grow();
 	void Shrink(); // When it hits a power-up it can shrink
 	void IsCollidedWithApple(FoodHandler& food); // Should not modify anything

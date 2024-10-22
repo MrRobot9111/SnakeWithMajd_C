@@ -9,8 +9,16 @@
 #include <deque>
 
 
-SnakeHandler::SnakeHandler(sf::Texture* headTexture)
+SnakeHandler::SnakeHandler(sf::Texture* headTexture2, sf::Texture* bodyTexture2)
 {
+
+    this->headTexture = new sf::Texture();
+    // Load texture for the head, if needed
+    this->headTexture->loadFromFile("img/snake_head.png");
+
+    this->bodyTexture = new sf::Texture();
+    this->bodyTexture->loadFromFile("img/circleTexture2.png");
+
     // Initialize the snake body with only its head
     SnakeBody head(sf::Vector2f(400, 500), 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
     snakeBody.push_back(head);
@@ -19,16 +27,14 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture)
     // Fixed this, but try more from Chat-GPT 
     sf::Vector2f adjustedPosition = head.position - sf::Vector2f(DISTANCE_OFFSET.x * head.movementDirection.x, DISTANCE_OFFSET.y * head.movementDirection.y);
 
-    snakeBody.push_back(SnakeBody(adjustedPosition, 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture));
-    snakeBody.push_back(SnakeBody(adjustedPosition - sf::Vector2f(DISTANCE_OFFSET.x, 0), 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition - sf::Vector2f(DISTANCE_OFFSET.x, 0), 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
 
 
     // Set snakeHead pointer to the first element of the deque
     snakeHead = &snakeBody.front(); // Use address-of operator to get a pointer
 
-    texture = new sf::Texture();
-    // Load texture for the head, if needed
-    texture->loadFromFile("img/snake_head.png");
+
 
 }
 
@@ -488,7 +494,7 @@ void SnakeHandler::Grow()
 
 	// Add all the pending direction changes to the body part, since they will be the same as the last body part
 
-    SnakeBody bodyPart(adjustedPosition, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, texture);
+    SnakeBody bodyPart(adjustedPosition, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, bodyTexture); // Crashes the game because the texture is null
     snakeBody.push_back(bodyPart);
 }
 

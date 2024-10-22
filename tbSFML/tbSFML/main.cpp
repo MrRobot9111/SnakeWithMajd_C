@@ -179,9 +179,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     sf::Texture* texture = new sf::Texture();
     texture->loadFromFile("img/snake_head.png");
 
+    sf::Texture* textureBody = new sf::Texture();
+    texture->loadFromFile("img/circleTexture2.png");
+
     FoodHandler foodHandler;
 
-    SnakeHandler snakeHandler(texture);
+    SnakeHandler snakeHandler(texture, textureBody);
 
     foodHandler.SpawnFood(5);
 
