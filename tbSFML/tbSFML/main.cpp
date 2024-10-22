@@ -10,6 +10,7 @@
 #include "Food.h"
 #include "FoodHandler.h"
 #include "SnakeHandler.h"
+#include "StartMenu.h"
 #include "Constants.h"
 
 class SimpleRectangle
@@ -166,8 +167,9 @@ public:
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
 {
-    //L‰s mer h‰r: https://learn.microsoft.com/en-us/cpp/c-runtime-library/find-memory-leaks-using-the-crt-library?view=msvc-170
+    //L√§s mer h√§r: https://learn.microsoft.com/en-us/cpp/c-runtime-library/find-memory-leaks-using-the-crt-library?view=msvc-170
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 
     sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "TB Snake!");
     window.setFramerateLimit(60);
@@ -180,6 +182,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     SnakeHandler snakeHandler(texture);
 
     foodHandler.SpawnFood(5);
+
+    StartMenu menu(window.getSize().x, window.getSize().y);
     
 
     while (window.isOpen())
@@ -191,16 +195,42 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
             {
                 window.close();
             }
+            switch (event.type)
+            {
+            case sf::Event::KeyReleased:
+                switch (event.key.code)
+                {
+                case sf::Keyboard::Up:
+                    menu.MoveUp();
+                    break;
+
+                case sf::Keyboard::Down:
+                        menu.MoveDown();
+                        break;
+
+                }
+
+                break;
+            case sf::Event::Closed:
+                window.close();
+
+                break;
+            }
         }
 
+
         // Background color - change to texture
+       
+
+
         window.clear(sf::Color::Cyan);
         snakeHandler.IsCollidedWithApple(foodHandler); // How can the food on the screen still be 5 after the snake collided with an apple
         foodHandler.EnsureAmountOfFoodOnScreen(5); // There will always be 5 apples on the screen
         snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y);
         foodHandler.DrawFood(window);
-
+        menu.draw(window);
         window.display();
+
 
     }
     
