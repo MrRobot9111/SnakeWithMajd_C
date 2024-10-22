@@ -150,6 +150,7 @@
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="SnakeBody.cpp" />
     <ClCompile Include="SnakeHandler.cpp" />
+    <ClCompile Include="StartMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeBody.h" />
     <ClInclude Include="SnakeHandler.h" />
+    <ClInclude Include="StartMenu.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

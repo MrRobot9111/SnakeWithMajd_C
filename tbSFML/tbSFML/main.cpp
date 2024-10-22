@@ -10,6 +10,7 @@
 #include "Food.h"
 #include "FoodHandler.h"
 #include "SnakeHandler.h"
+#include "StartMenu.h"
 
 class SimpleRectangle
 {
@@ -168,7 +169,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     //Läs mer här: https://learn.microsoft.com/en-us/cpp/c-runtime-library/find-memory-leaks-using-the-crt-library?view=msvc-170
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
-    int windowWidth = 1200, windowHeight = 800;
+    int windowWidth = 600, windowHeight = 600;
     sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "TB Snake!");
     window.setFramerateLimit(60);
     
@@ -185,6 +186,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     SnakeHandler snakeHandler(texture);
 
     foodHandler.SpawnFood(5);
+
+    StartMenu menu(window.getSize().x, window.getSize().y);
     
 
     while (window.isOpen())
@@ -196,13 +199,38 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
             {
                 window.close();
             }
+            switch (event.type)
+            {
+            case sf::Event::KeyReleased:
+                switch (event.key.code)
+                {
+                case sf::Keyboard::Up:
+                    menu.MoveUp();
+                    break;
+
+                case sf::Keyboard::Down:
+                        menu.MoveDown();
+                        break;
+
+                }
+
+                break;
+            case sf::Event::Closed:
+                window.close();
+
+                break;
+            }
         }
 
+
         // Background color - change to texture
-        window.clear(sf::Color::Cyan);
+       
+       /* window.clear(sf::Color::Cyan);
         snakeHandler.Update(window, windowWidth, windowHeight);
-        foodHandler.DrawFood(window);
+        foodHandler.DrawFood(window);*/
+        menu.draw(window);
         window.display();
+
 
     }
     
