@@ -3,35 +3,43 @@
 #include "Constants.h"
 #include "DirectionChange.h"
 #include "FoodHandler.h"
+#include "GameStatesManager.h"
+#include "GameStatesEnum.h"
 #include <optional>
 #include <deque>
 
 
-SnakeHandler::SnakeHandler(sf::Texture* headTexture)
+SnakeHandler::SnakeHandler(sf::Texture* headTexture2, sf::Texture* bodyTexture2)
 {
+
+    this->headTexture = new sf::Texture();
+    // Load texture for the head, if needed
+    this->headTexture->loadFromFile("img/snake_head.png");
+
+    this->bodyTexture = new sf::Texture();
+    this->bodyTexture->loadFromFile("img/circleTexture2.png");
+
     // Initialize the snake body with only its head
-    SnakeBody head(sf::Vector2f(400, 500), 0, 1, sf::Vector2f(1, 0), headTexture);
+    SnakeBody head(sf::Vector2f(400, 500), 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
     snakeBody.push_back(head);
 
 
     // Fixed this, but try more from Chat-GPT 
     sf::Vector2f adjustedPosition = head.position - sf::Vector2f(DISTANCE_OFFSET.x * head.movementDirection.x, DISTANCE_OFFSET.y * head.movementDirection.y);
 
-    snakeBody.push_back(SnakeBody(adjustedPosition, 0, 1, sf::Vector2f(1, 0), headTexture));
-    snakeBody.push_back(SnakeBody(adjustedPosition - sf::Vector2f(DISTANCE_OFFSET.x, 0), 0, 1, sf::Vector2f(1, 0), headTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
+    snakeBody.push_back(SnakeBody(adjustedPosition - sf::Vector2f(DISTANCE_OFFSET.x, 0), 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
 
 
     // Set snakeHead pointer to the first element of the deque
     snakeHead = &snakeBody.front(); // Use address-of operator to get a pointer
 
-    texture = new sf::Texture();
-    // Load texture for the head, if needed
-    texture->loadFromFile("img/snake_head.png");
+
 
 }
 
 // Add a delay so that errors do not occur
-void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)
+void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesManager* gameStatesManger )
 {
     // Update the position using the arrow operator
     snakeHead->position += snakeHead->movementDirection * snakeHead->speed;
@@ -86,36 +94,40 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight)
 
 
 
-    CheckIfOutOfScreen(screenWidth, screenHeight);
+    CheckIfOutOfScreen(screenWidth, screenHeight, gameStatesManger);
 
     // Set the position of the sprite
     snakeHead->sprite.setPosition(snakeHead->position);
-	UpdateBodyPostion();
+	UpdateBodyPostion(gameStatesManger);
 }
 
-void SnakeHandler::CheckIfOutOfScreen(int screenWidth, int screenHeight)
+void SnakeHandler::CheckIfOutOfScreen(int screenWidth, int screenHeight, GameStatesManager* gameStatesManager)
 {
     // If the snake is outside the screen, then it is dead
     if (snakeHead->position.x > float(screenWidth + SNAKE_BODY_SIZE.x / 2.f))
     {
+        gameStatesManager->currentGameState = GameStatesEnum::GameOver;
         snakeHead->position.x = float(screenWidth + SNAKE_BODY_SIZE.x / 2.f);
     }
     else if (snakeHead->position.x < 0)
     {
+        gameStatesManager->currentGameState = GameStatesEnum::GameOver;
         snakeHead->position.x = 0;
     }
 
     if (snakeHead->position.y > float(screenHeight + SNAKE_BODY_SIZE.y / 2.f))
     {
+        gameStatesManager->currentGameState = GameStatesEnum::GameOver;
         snakeHead->position.y = float(screenHeight + SNAKE_BODY_SIZE.y / 2.f);
     }
     else if (snakeHead->position.y < 0)
     {
+        gameStatesManager->currentGameState = GameStatesEnum::GameOver;
         snakeHead->position.y = 0;
     }
 }
 
-void SnakeHandler::UpdateBodyPostion() 
+void SnakeHandler::UpdateBodyPostion(GameStatesManager* gameStatesManager) 
 {
 
     // Start from the end of the snake, but exclude the head, which is the first element
@@ -336,6 +348,8 @@ void SnakeHandler::UpdateBodyPostion()
 			currentPart.localDirectionChangesIndex--;
         }
 
+        // Set the rotation
+
 	    // Ensure that the index will surpass the size of the deque
         if (!globalDirectionChanges.empty() && currentPart.localDirectionChangesIndex < (globalDirectionChanges.size()))
         {
@@ -348,8 +362,13 @@ void SnakeHandler::UpdateBodyPostion()
                     currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
                     currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
 
+                    // Set the rotation
+                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
+
                     // Aim for the next point in the coming iteration
                     currentPart.localDirectionChangesIndex++;
+
+
                 }
 
                 else if (currentPart.position.x + movementStep.x < globalDirectionChanges[currentPart.localDirectionChangesIndex].position.x && currentPart.movementDirection.x < 0)
@@ -359,7 +378,12 @@ void SnakeHandler::UpdateBodyPostion()
                     currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
                     currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
 
+                    // Set the rotation
+                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
+
                     currentPart.localDirectionChangesIndex++;
+
+
 
                 }
 
@@ -372,7 +396,12 @@ void SnakeHandler::UpdateBodyPostion()
                     currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
                     currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
 
+                    // Set the rotation
+                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
+
                     currentPart.localDirectionChangesIndex++;
+
+
 
                 }
 
@@ -383,7 +412,13 @@ void SnakeHandler::UpdateBodyPostion()
                     currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
                     currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
 
+
+                    // Set the rotation
+                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
+
                     currentPart.localDirectionChangesIndex++;
+
+
                 }
 
         }
@@ -400,12 +435,12 @@ void SnakeHandler::UpdateBodyPostion()
         // Change to the movement direction above
         currentPart.position += snakeBody[i].movementDirection * snakeBody[i].speed;
         snakeBody[i].sprite.setPosition(currentPart.position);
-        IsCollidedWithSelf(currentPart); // Check if the part has collided with the head
+        IsCollidedWithSelf(currentPart, gameStatesManager); // Check if the part has collided with the head
     }
     // Check if the head has collided with an apple
 }
 
-void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart)
+void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart, GameStatesManager* gameStateManager)
 {
     // Check if the heads coordinates are equal or in approximation to any of the body parts
     // This has to be done on each frame, there is no way around it
@@ -416,7 +451,7 @@ void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart)
     // Since each body part is 50 wide and the position is based on their centers, then if the distance is less or equal to 50 there is a collision
     if (distanceToBodyPart <= 25) // The problem is that the picture is 50x50 in size, but not the head, for the moment we should use 25
     {
-        int x = 5;
+        gameStateManager->currentGameState = GameStatesEnum::GameOver;
     }
 
 
@@ -459,13 +494,13 @@ void SnakeHandler::Grow()
 
 	// Add all the pending direction changes to the body part, since they will be the same as the last body part
 
-    SnakeBody bodyPart(adjustedPosition, lastBodyPart.sprite.getRotation(), 1, lastBodyPart.movementDirection, texture);
+    SnakeBody bodyPart(adjustedPosition, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, bodyTexture); // Crashes the game because the texture is null
     snakeBody.push_back(bodyPart);
 }
 
-void SnakeHandler::Update(sf::RenderWindow& window, int screenWidth, int screenHeight)
+void SnakeHandler::Update(sf::RenderWindow& window, int screenWidth, int screenHeight, GameStatesManager* gameStatesManager)
 {
-    KeyboardInput(screenWidth, screenHeight);
+    KeyboardInput(screenWidth, screenHeight, gameStatesManager);
 	// Test to spawn more snake parts
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
 	{
