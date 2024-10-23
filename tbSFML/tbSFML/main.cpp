@@ -11,6 +11,7 @@
 #include "FoodHandler.h"
 #include "SnakeHandler.h"
 #include "StartMenu.h"
+#include "GameOver.h"
 #include "Constants.h"
 #include "GameStatesEnum.h"
 #include "GameStatesManager.h"
@@ -190,9 +191,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
     StartMenu menu(window.getSize().x, window.getSize().y);
 
+    GameOver GameOverMenuItems(window.getSize().x, window.getSize().y);
+    
+
     // Set the state of the game
     GameStatesManager* gameStatesManager = new GameStatesManager();
     gameStatesManager->SetState(GameStatesEnum::Playing);
+
 
     while (window.isOpen())
     {
@@ -213,9 +218,55 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
                     break;
 
                 case sf::Keyboard::Down:
+
+                        menu.MoveDown();
+                        break;
+                         
+                case sf::Keyboard::Return:
+                    switch (menu.GetPressedItem())
+                    {
+                    case 0:
+                        // set state to play
+                        break;
+                    case 1:
+                        // set state to settings
+                        break;
+                    case 2:
+                        window.close();
+                    }
+                
+                    {
+
+                    }
+
+                    break;
+
+                }
+
+                break;
+            case sf::Event::Closed:
+                window.close();
                     menu.MoveDown();
                     break;
 
+                break;
+            }
+
+            switch (event.type)
+            {
+            case sf::Event::KeyReleased:
+                switch (event.key.code)
+                {
+                    
+                case sf::Keyboard::Return:
+                    switch (GameOverMenuItems.GetPressedItem())
+                    {
+                    case 1:
+                    {
+                        //Gamestate back to menu
+                    }
+
+                    }
                 }
 
                 break;
@@ -224,7 +275,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
                 break;
             }
+
+            
         }
+
 
 
     
