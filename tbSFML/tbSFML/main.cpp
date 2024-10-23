@@ -196,7 +196,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
     // Set the state of the game
     GameStatesManager* gameStatesManager = new GameStatesManager();
-    gameStatesManager->SetState(GameStatesEnum::Playing);
+    gameStatesManager->SetState(GameStatesEnum::MainMenu);
 
 
     while (window.isOpen())
@@ -204,79 +204,86 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }
-            switch (event.type)
-            {
-            case sf::Event::KeyReleased:
-                switch (event.key.code)
-                {
-                case sf::Keyboard::Up:
-                    menu.MoveUp();
-                    break;
 
-                case sf::Keyboard::Down:
+            if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu) {
+                if (event.type == sf::Event::Closed)
+                {
+                    window.close();
+                }
+                switch (event.type)
+                {
+                case sf::Event::KeyReleased:
+                    switch (event.key.code)
+                    {
+                    case sf::Keyboard::Up:
+                        menu.MoveUp();
+                        break;
+
+                    case sf::Keyboard::Down:
 
                         menu.MoveDown();
                         break;
-                         
-                case sf::Keyboard::Return:
-                    switch (menu.GetPressedItem())
-                    {
-                    case 0:
-                        // set state to play
+
+                    case sf::Keyboard::Return:
+                        switch (menu.GetPressedItem())
+                        {
+                        case 0:
+                            // set state to play
+                            gameStatesManager->SetState(GameStatesEnum::Playing);
+                            break;
+                        case 1:
+                            // set state to settings - currently no such option
+                            break;
+                        case 2:
+                            window.close();
+                        }
+
+                        {
+
+                        }
+
                         break;
-                    case 1:
-                        // set state to settings
-                        break;
-                    case 2:
-                        window.close();
-                    }
-                
-                    {
 
                     }
 
                     break;
-
-                }
-
-                break;
-            case sf::Event::Closed:
-                window.close();
+                case sf::Event::Closed:
+                    window.close();
                     menu.MoveDown();
                     break;
 
-                break;
-            }
-
-            switch (event.type)
-            {
-            case sf::Event::KeyReleased:
-                switch (event.key.code)
-                {
-                    
-                case sf::Keyboard::Return:
-                    switch (GameOverMenuItems.GetPressedItem())
-                    {
-                    case 1:
-                    {
-                        //Gamestate back to menu
-                    }
-
-                    }
+                    break;
                 }
-
-                break;
-            case sf::Event::Closed:
-                window.close();
-
-                break;
             }
 
             
+            if (gameStatesManager->currentGameState == GameStatesEnum::GameOver) 
+            {
+                switch (event.type)
+                {
+                case sf::Event::KeyReleased:
+                    switch (event.key.code)
+                    {
+
+                    case sf::Keyboard::Return:
+                        switch (GameOverMenuItems.GetPressedItem())
+                        {
+                        case 1:
+                        {
+                            //Gamestate back to menu
+                            gameStatesManager->SetState(GameStatesEnum::MainMenu);
+                        }
+
+                        }
+                    }
+
+                    break;
+                case sf::Event::Closed:
+                    window.close();
+
+                    break;
+                }
+            }       
         }
 
 
@@ -299,10 +306,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
             window.display();
         }
 
-        if (gameStatesManager->currentGameState == GameStatesEnum::GameOver) 
-        {
-            // 
-        }
     }
 
     delete gameStatesManager;

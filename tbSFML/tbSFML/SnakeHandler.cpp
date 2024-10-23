@@ -470,8 +470,6 @@ void SnakeHandler::IsCollidedWithApple(FoodHandler& foodHandler)
             // Add score in the game to the player 
             Grow();
             break;
-            // Remove the apple
-            //foodHandler.RemoveApple(apple);
         }
    }
 
