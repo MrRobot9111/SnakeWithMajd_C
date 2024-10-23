@@ -146,6 +146,7 @@
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="CreateObject.cpp" />
     <ClCompile Include="FoodHandler.cpp" />
+    <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="Snake.cpp" />
@@ -160,11 +161,16 @@
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="CreateObject.h" />
     <ClInclude Include="FoodHandler.h" />
+    <ClInclude Include="GameOver.h" />
     <ClInclude Include="MovingObject.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="SnakeBody.h" />
     <ClInclude Include="SnakeHandler.h" />
     <ClInclude Include="StartMenu.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="tbSFML.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2,20 +2,18 @@
 #include "SFML/Graphics.hpp"
 
 #define MAX_NUMBER_OF_ITEMS 3
-class StartMenu
+class GameOver
 {
 public:
-	StartMenu(float width, float height);
-	~StartMenu();
+	GameOver(float width, float height);
+	~GameOver();
 
 	void draw(sf::RenderWindow& window);
-	void MoveUp();
-	void MoveDown();
 	int GetPressedItem() { return selectedItemIndex; }
 
 private:
 	int selectedItemIndex;
 	sf::Font font;
-	sf::Text menu[MAX_NUMBER_OF_ITEMS];
+	sf::Text GameOverMenuItems[MAX_NUMBER_OF_ITEMS];
 
 };
