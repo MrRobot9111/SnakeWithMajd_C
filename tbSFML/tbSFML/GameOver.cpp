@@ -14,7 +14,7 @@ GameOver::GameOver(float width, float height)
 
 	GameOverMenuItems[1].setFont(font);
 	GameOverMenuItems[1].setFillColor(sf::Color::White);
-	GameOverMenuItems[1].setString("Return to menu");
+	GameOverMenuItems[1].setString("Press Enter to Return to Main Menu");
 	GameOverMenuItems[1].setPosition(sf::Vector2f(width / 5, height / (MAX_NUMBER_OF_ITEMS + 1) * 2));
 
 	selectedItemIndex = 1;

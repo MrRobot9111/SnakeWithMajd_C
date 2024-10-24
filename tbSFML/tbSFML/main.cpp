@@ -251,8 +251,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
                     window.close();
                     menu.MoveDown();
                     break;
-
-                    break;
                 }
             }
 
@@ -277,7 +275,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
                         case 1:
                         {
                             //Gamestate back to menu
-                            gameStatesManager->SetState(GameStatesEnum::MainMenu);
+							gameStatesManager->SetState(GameStatesEnum::MainMenu);
+
+                            // Reset the snake 
+
+							snakeHandler.ResetSnake();
+							// Reset the food
+
+                            // Reset the points
+
+							break;
                         }
 
                         }
