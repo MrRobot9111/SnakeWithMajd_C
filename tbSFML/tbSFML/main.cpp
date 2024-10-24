@@ -257,8 +257,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
             }
 
             
+            // Actives when its is game over, and enter is pressed
             if (gameStatesManager->currentGameState == GameStatesEnum::GameOver) 
             {
+
+                window.clear(sf::Color::Cyan);
+                GameOverMenuItems.draw(window);
+                window.display();
+
                 switch (event.type)
                 {
                 case sf::Event::KeyReleased:
