@@ -36,7 +36,7 @@ public:
 	void KeyboardInput(int screenWidth, int screenHeight, GameStatesManager* gameStateManager);
 
 	// These are handling the update of the body
-	sf::Vector2i DetermineNewRowColumn(SnakeBody sn);
+	void DetermineNewRowColumn(SnakeBody sn);
 	void DetermineNewRowColumn(SnakeBody* sn);
 	void UpdateBodyPostion(GameStatesManager* gameStatesManager);
 

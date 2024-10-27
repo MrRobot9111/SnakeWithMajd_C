@@ -1,10 +1,11 @@
 #include "Food.h"
 
-Food::Food(sf::Vector2f size, sf::Vector2f position, sf::Texture* _texture, float rotation)
+Food::Food(int rowIndexIN, int columnIndexIN,  sf::Vector2f size, sf::Texture* _texture, float rotation)
 {
     this->texture = _texture;
     this->size = size;
-    this->position = position;
+	columnIndex = columnIndexIN;
+	rowIndex = rowIndexIN;  
     this->rotation = rotation;
 
     sprite.setTexture(*texture);  // Set the texture to the sprite
@@ -14,7 +15,6 @@ Food::Food(sf::Vector2f size, sf::Vector2f position, sf::Texture* _texture, floa
     sprite.setOrigin(texture->getSize().x / 2, texture->getSize().y / 2);
 
     // Set the initial position and rotation of the sprite
-    sprite.setPosition(position);
     sprite.setRotation(rotation);
 
 }
@@ -26,5 +26,5 @@ void Food::Draw(sf::RenderWindow& window)
 
 // Comparison operator
 bool Food::operator==(const Food& other) const {
-    return position == other.position;
+    return columnIndex == other.columnIndex && rowIndex == other.rowIndex;
 }

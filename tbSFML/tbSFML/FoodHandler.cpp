@@ -2,7 +2,9 @@
 #include "Constants.h"
 #include <random>
 #include <iostream>
+#include "GridMap.h"
 #include <filesystem>
+
 
 void FoodHandler::SpawnFood(int spawnAmount)
 {
@@ -15,20 +17,42 @@ void FoodHandler::SpawnFood(int spawnAmount)
 
 	for (int i = 0; i < spawnAmount; i++) 
 	{
-		Food foodApple(APPLE_SIZE, GenerateRandomCoordinates(), texture, 0);
+
+		sf::Vector2i rowColumn = GenerateRandomCoordinates();
+
+		Food foodApple(rowColumn.x, rowColumn.y, APPLE_SIZE, texture, 0);
 		foodOnScreen.push_back(foodApple);
+		GridMap::PlaceObjectInGrid(foodApple.rowIndex, foodApple.columnIndex, 1); // 1 because it is an apple
 	}
 
 }
 
-sf::Vector2f FoodHandler::GenerateRandomCoordinates() 
+sf::Vector2i FoodHandler::GenerateRandomCoordinates() 
 {
-	float randomNumX = rand() % SCREEN_SIZE.x;
-	float randomNumY = rand() % SCREEN_SIZE.y;
+	// Ensure that the food is spawned on an empty space
+	while (true) 
+	{
+		int columIndex = rand() % GridMap::columnsWide;
+		int rowIndex = rand() % GridMap::rowsWide;
 
-	return sf::Vector2f(randomNumX, randomNumY);
+		// 0 means that the grid position is empty
+		if (GridMap::gridMap[rowIndex][columIndex] == 0) 
+		{
+			return sf::Vector2i(rowIndex, columIndex);
+			break;
+		}
+
+	}
+
+	return sf::Vector2i(0, 0);
 }
 
+void FoodHandler::RemoveApple(Food food) 
+{
+	foodOnScreen.remove(food);
+	GridMap::PlaceObjectInGrid(food.rowIndex, food.columnIndex, 0);
+	EnsureAmountOfFoodOnScreen(5);
+}
 
 
 void FoodHandler::DrawFood(sf::RenderWindow& window)

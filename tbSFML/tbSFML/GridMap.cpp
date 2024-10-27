@@ -3,8 +3,8 @@
 
 // Define the static gridMap
 std::vector<std::vector<int>> GridMap::gridMap;
-static int columnsWide;
-static int rowsWide;
+int GridMap::columnsWide;
+int GridMap::rowsWide;
 
 void GridMap::InitializeGridMap()
 {
@@ -17,5 +17,6 @@ void GridMap::InitializeGridMap()
 
 void GridMap::PlaceObjectInGrid(int rowIndex, int colIndex, int object) 
 {
+	// Problem with row and colIndex being mixed up
 	gridMap[rowIndex][colIndex] = object; // Occupy the grid position with the object
 }

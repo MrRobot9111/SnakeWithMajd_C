@@ -57,27 +57,27 @@ void SnakeHandler::ResetSnake()
 
 }
 
-sf::Vector2i SnakeHandler::DetermineNewRowColumn(SnakeBody sn) 
+void SnakeHandler::DetermineNewRowColumn(SnakeBody sn) 
 {
     // Use enums to handle direction alter
 
     if (sn.movementDirection == sf::Vector2f(1, 0)) 
     {
-		return sf::Vector2i(1, 0);
+        sn.gridColumn++;
         
     }
     else if (sn.movementDirection == sf::Vector2f(-1, 0)) 
     {
-        return sf::Vector2i(-1, 0);
+        sn.gridColumn--;
     }
 
     if (sn.movementDirection == sf::Vector2f(0, 1))
     {
-        return sf::Vector2i(0, 1);
+        sn.gridRow++;
     }
     else if (sn.movementDirection == sf::Vector2f(0, -1))
     {
-        return sf::Vector2i(0, -1);
+        sn.gridRow--;
     }
 
 }
@@ -206,127 +206,34 @@ void SnakeHandler::UpdateBodyPostion(GameStatesManager* gameStatesManager)
     {
 
         SnakeBody& currentPart = snakeBody[i];
-        SnakeBody& nextPart = snakeBody[i - 1];
 
-        sf::Vector2i movementStep = DetermineNewRowColumn(currentPart);
-        
-		// Decrease the index if an element was removed from the tail - the loop starts at the tail 
-        if (decreaseIndex) 
-        {
-			currentPart.localDirectionChangesIndex--;
-        }
+        DetermineNewRowColumn(currentPart);
 
-        // Set the rotation
-
-	    // Ensure that the index will surpass the size of the deque
-        if (!globalDirectionChanges.empty() && currentPart.localDirectionChangesIndex < (globalDirectionChanges.size()))
-        {
-
-
-                if (currentPart.gridColumn + movementStep.x > globalDirectionChanges[currentPart.localDirectionChangesIndex].position.x && currentPart.movementDirection.x > 0)
-                {
-
-                    // Prevent from overshooting position by setting a exact position
-                    currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
-                    currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
-
-                    // Set the rotation
-                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
-
-                    // Aim for the next point in the coming iteration
-                    currentPart.localDirectionChangesIndex++;
-
-
-                }
-
-                else if (currentPart.position.x + movementStep.x < globalDirectionChanges[currentPart.localDirectionChangesIndex].position.x && currentPart.movementDirection.x < 0)
-                {
-
-
-                    currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
-                    currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
-
-                    // Set the rotation
-                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
-
-                    currentPart.localDirectionChangesIndex++;
-
-
-
-                }
-
-
-
-                else if (currentPart.position.y + movementStep.y > globalDirectionChanges[currentPart.localDirectionChangesIndex].position.y && currentPart.movementDirection.y > 0)
-                {
-
-
-                    currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
-                    currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
-
-                    // Set the rotation
-                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
-
-                    currentPart.localDirectionChangesIndex++;
-
-
-
-                }
-
-                else if (currentPart.position.y + movementStep.y < globalDirectionChanges[currentPart.localDirectionChangesIndex].position.y && currentPart.movementDirection.y < 0)
-                {
-
-
-                    currentPart.position = globalDirectionChanges[currentPart.localDirectionChangesIndex].position;
-                    currentPart.movementDirection = globalDirectionChanges[currentPart.localDirectionChangesIndex].newDirection;
-
-
-                    // Set the rotation
-                    currentPart.sprite.rotate(globalDirectionChanges[currentPart.localDirectionChangesIndex].rotation);
-
-                    currentPart.localDirectionChangesIndex++;
-
-
-                }
-
-        }
-
-	    // If the last body part, the first in the iteration has an index larger than 0, remove the first item from the global deque
-        if (snakeBody.size() - 1 == i && currentPart.localDirectionChangesIndex > 0 && globalDirectionChanges.size() > 0)
-        {
-		    // Remove the oldest item from the deque, since the last item reached it
-            currentPart.localDirectionChangesIndex--;
-			globalDirectionChanges.pop_front();
-			decreaseIndex = true;
-        }
-
-        // Change to the movement direction above
-        currentPart.position += snakeBody[i].movementDirection * snakeBody[i].speed;
         IsCollidedWithSelf(currentPart, gameStatesManager); // Check if the part has collided with the head
     }
 }
 
 void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart, GameStatesManager* gameStateManager)
 {
-        
+    // Check if the head's row or col index is the same as another body parts   
+    if (snakeBodyPart.gridColumn == snakeHead->gridColumn && snakeBodyPart.gridRow == snakeHead->gridRow) {
+		gameStateManager->currentGameState = GameStatesEnum::GameOver;
+        return;
+    }
+
 }
 
 void SnakeHandler::IsCollidedWithApple(FoodHandler& foodHandler) 
 {
-    int index = 0;
-    for (Food apple : foodHandler.foodOnScreen) 
+    for (Food apple : foodHandler.foodOnScreen)
     {
-        float distanceToFood = sqrt(pow((snakeHead->position.x - apple.position.x), 2) + pow((snakeHead->position.y - apple.position.y), 2));
-        if (distanceToFood <= 25) // The problem is that the picture is 50x50 in size, but not the head, for the moment we should use 25
+        if (snakeHead->gridColumn == apple.columnIndex && snakeHead->gridRow == apple.rowIndex) // The problem is that the picture is 50x50 in size, but not the head, for the moment we should use 25
         {
-
-			foodHandler.foodOnScreen.remove(apple);
-            // Add score in the game to the player 
+			foodHandler.RemoveApple(apple);
             Grow();
             break;
         }
-   }
-
+    }
 }
 
 
@@ -334,12 +241,10 @@ void SnakeHandler::Grow()
 {
     // Get the last body part (the tail)
     const SnakeBody& lastBodyPart = snakeBody.back();
-    
-    // Create the new body part and add it to the snake
 
-	// Add all the pending direction changes to the body part, since they will be the same as the last body part
+	// Calculate the new position by using the direction of the last body part if the direction is x+ then the body part should be column - 1
 
-    SnakeBody bodyPart(lastBodyPart.gridColumn, lastBodyPart.gridRow, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, bodyTexture); // Crashes the game because the texture is null
+    SnakeBody bodyPart(lastBodyPart.gridColumn, lastBodyPart.gridRow, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, bodyTexture);
     snakeBody.push_back(bodyPart);
 }
 
