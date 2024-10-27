@@ -1,21 +1,15 @@
 #include "SnakeBody.h"
 #include "Constants.h"
+#include "GridMap.h"
 #include <optional>
 
-// Default constructor
-SnakeBody::SnakeBody()
-    : position(0, 0), movementDirection(0, 0), speed(1.0f) // Initialize members as needed
-{
-    // Optionally, set up the sprite and texture if necessary
-}
-
-
-SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture)
+SnakeBody::SnakeBody(int gridColumnIN, int gridRowIN, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture)
 {
     // Check if this is correct
     speed = _speed;
     movementDirection = _movementDirection;   
-    position = _pos;
+	gridColumn = gridColumnIN;
+	gridRow = gridRowIN;
     texture = _texture;
     sprite.setTexture(*texture);  // Set the texture to the sprite
 
@@ -26,7 +20,6 @@ SnakeBody::SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vecto
     sprite.setOrigin(texture->getSize().x / 2.f, texture->getSize().y / 2.f);
 
     // Set the initial position and rotation of the sprite
-    sprite.setPosition(_pos);
     sprite.setRotation(_rotation);
 
 }

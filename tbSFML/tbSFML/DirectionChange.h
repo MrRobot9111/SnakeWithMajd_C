@@ -6,7 +6,8 @@
 class DirectionChange
 {
 public:
-    sf::Vector2f position;     // Position where the direction change occurred
+    int columnIndex;
+    int rowIndex;
     sf::Vector2f newDirection; // New movement direction
     float rotation;            // Rotation angle for the sprite
 	bool isOutOfScreenXRight = false; // True if the head has exceeded the right side of the screen

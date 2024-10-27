@@ -7,7 +7,9 @@
 class SnakeBody
 {
 public:
-	sf::Vector2f position;
+	int gridColumn;
+	int gridRow;
+
 	sf::Sprite sprite;
 	sf::Texture* texture;
 	sf::Vector2f movementDirection;
@@ -19,7 +21,7 @@ public:
 	float rotation;
 public:
 	SnakeBody();
-	SnakeBody(sf::Vector2f _pos, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture);
+	SnakeBody(int gridColumn, int gridRow, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture);
 
 
 	void Update(int screenWidth, int screenHeight);

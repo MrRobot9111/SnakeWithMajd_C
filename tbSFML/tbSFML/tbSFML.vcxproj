@@ -146,9 +146,9 @@
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="CreateObject.cpp" />
     <ClCompile Include="FoodHandler.cpp" />
-
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="GameStatesManager.cpp" />
+    <ClCompile Include="GridMap.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MovingObject.cpp" />
     <ClCompile Include="PointAndLifeSystem.cpp" />
@@ -165,6 +165,7 @@
     <ClInclude Include="CreateObject.h" />
     <ClInclude Include="FoodHandler.h" />
     <ClInclude Include="GameOver.h" />
+    <ClInclude Include="GridMap.h" />
     <ClInclude Include="MovingObject.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="GameStatesEnum.h" />
