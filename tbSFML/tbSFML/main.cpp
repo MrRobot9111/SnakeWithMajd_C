@@ -204,12 +204,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         sf::Event event;
         while (window.pollEvent(event))
         {
+            if (event.type == sf::Event::Closed)
+            {
+                window.close();
+            }
 
-            if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu) {
-                if (event.type == sf::Event::Closed)
-                {
-                    window.close();
-                }
+            // Handle events based on the current game state
+            if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu)
+            {
                 switch (event.type)
                 {
                 case sf::Event::KeyReleased:
@@ -218,107 +220,61 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
                     case sf::Keyboard::Up:
                         menu.MoveUp();
                         break;
-
                     case sf::Keyboard::Down:
-
                         menu.MoveDown();
                         break;
-
                     case sf::Keyboard::Return:
                         switch (menu.GetPressedItem())
                         {
-                        case 0:
-                            // set state to play
+                        case 0: // Start game
                             gameStatesManager->SetState(GameStatesEnum::Playing);
                             break;
-                        case 1:
-                            // set state to settings - currently no such option
-                            break;
-                        case 2:
+                        case 2: // Exit game
                             window.close();
+                            break;
                         }
-
-                        {
-
-                        }
-
                         break;
-
                     }
-
-                    break;
-                case sf::Event::Closed:
-                    window.close();
-                    menu.MoveDown();
                     break;
                 }
             }
-
-            
-            // Actives when its is game over, and enter is pressed
-            if (gameStatesManager->currentGameState == GameStatesEnum::GameOver) 
+            else if (gameStatesManager->currentGameState == GameStatesEnum::GameOver)
             {
-
-                window.clear(sf::Color::Cyan);
-                GameOverMenuItems.draw(window);
-                window.display();
-
-                switch (event.type)
+                if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Return)
                 {
-                case sf::Event::KeyReleased:
-                    switch (event.key.code)
+                    switch (GameOverMenuItems.GetPressedItem())
                     {
-
-                    case sf::Keyboard::Return:
-                        switch (GameOverMenuItems.GetPressedItem())
-                        {
-                        case 1:
-                        {
-                            //Gamestate back to menu
-							gameStatesManager->SetState(GameStatesEnum::MainMenu);
-
-                            // Reset the snake 
-
-							snakeHandler.ResetSnake();
-							// Reset the food
-
-                            // Reset the points
-
-							break;
-                        }
-
-                        }
+                    case 1: // Return to Main Menu
+                        gameStatesManager->SetState(GameStatesEnum::MainMenu);
+                        snakeHandler.ResetSnake();
+                        break;
                     }
-
-                    break;
-                case sf::Event::Closed:
-                    window.close();
-
-                    break;
                 }
-            }       
+            }
         }
 
-
-
-    
-        if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu) 
+        // Render based on the current game state
+        if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu)
         {
             window.clear(sf::Color::Cyan);
             menu.draw(window);
             window.display();
         }
-
-        if (gameStatesManager->currentGameState == GameStatesEnum::Playing) 
+        else if (gameStatesManager->currentGameState == GameStatesEnum::Playing)
         {
             window.clear(sf::Color::Cyan);
-            snakeHandler.IsCollidedWithApple(foodHandler); // How can the food on the screen still be 5 after the snake collided with an apple
-            foodHandler.EnsureAmountOfFoodOnScreen(5); // There will always be 5 apples on the screen
+            snakeHandler.IsCollidedWithApple(foodHandler);
+            foodHandler.EnsureAmountOfFoodOnScreen(5);
             snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y, gameStatesManager);
             foodHandler.DrawFood(window);
             window.display();
         }
-
+        else if (gameStatesManager->currentGameState == GameStatesEnum::GameOver)
+        {
+            window.clear(sf::Color::Cyan);
+            GameOverMenuItems.draw(window);
+            window.display();
+        }
     }
 
     delete gameStatesManager;
