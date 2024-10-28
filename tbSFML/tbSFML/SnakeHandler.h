@@ -27,7 +27,7 @@ public:
 	void Grow();
 	void Shrink(); // When it hits a power-up it can shrink
 	void IsCollidedWithApple(FoodHandler& food); // Should not modify anything
-	void IsCollidedWithSelf(SnakeBody* head, GameStatesManager* gameStateManager);
+	void IsCollidedWithSelf(GameStatesManager* gameStateManager, sf::Vector2i newHeadPos);
 	bool KeydownTimeElapsed();
 
 

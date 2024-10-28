@@ -266,6 +266,9 @@ void SnakeHandler::UpdateBodyPostion(GameStatesManager* gameStatesManager)
     // Clear the grid position of the last body part
     GridMap::PlaceObjectInGrid(lastBodyPart.gridRow, lastBodyPart.gridColumn, 0);
 
+    // Check the position of were the head is going to be placed before it is placed there
+    IsCollidedWithSelf(gameStatesManager, newHeadPosition);
+
     // Move the last body part to the new head position and update its direction
     lastBodyPart.SetNewSpritePosition(newHeadPosition.x, newHeadPosition.y);
     lastBodyPart.movementDirection = head.movementDirection;
@@ -281,18 +284,18 @@ void SnakeHandler::UpdateBodyPostion(GameStatesManager* gameStatesManager)
     snakeHead = &snakeBody.front();
 
     // Check for collisions with itself after updating the position
-    IsCollidedWithSelf(snakeHead, gameStatesManager);
+
 
 }
 
-void SnakeHandler::IsCollidedWithSelf(SnakeBody* head, GameStatesManager* gameStateManager)
+void SnakeHandler::IsCollidedWithSelf(GameStatesManager* gameStateManager, sf::Vector2i newHeadPos)
 {
 
     // Check in all three directions front, left, right
 
     // Check if the head's row or col index is the same as another body parts   
-    // 2 indicates that there is a body part there
-    if (GridMap::gridMap[head->gridRow][head->gridColumn] == 2)
+    // 2 indicates that there is a body part there 
+    if (GridMap::gridMap[newHeadPos.x][newHeadPos.y] == 2) // Could be wrong
     {
 		gameStateManager->currentGameState = GameStatesEnum::GameOver;
         return;
