@@ -21,9 +21,9 @@ public:
 	float rotation;
 public:
 	SnakeBody();
-	SnakeBody(int gridColumn, int gridRow, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture);
+	SnakeBody(int gridRowIN, int gridColumnIN, float _rotation, float _speed, sf::Vector2f _movementDirection, sf::Texture* _texture);
 
-
+	void SetNewSpritePosition(int addRow, int addCol);
 	void Update(int screenWidth, int screenHeight);
 	void Draw(sf::RenderWindow& window);
 };

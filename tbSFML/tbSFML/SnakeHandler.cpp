@@ -21,12 +21,14 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture2, sf::Texture* bodyTexture2)
     this->bodyTexture->loadFromFile("img/circleTexture2.png");
 
     // Initialize the snake body with only its head
-    SnakeBody head(4, 5, 270, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
+    SnakeBody head(4, 5, 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
+	GridMap::PlaceObjectInGrid(head.gridRow, head.gridColumn, 2);
     snakeBody.push_back(head);
 
+	sf::Vector2i newPosition = CalculateNewPosition(head);
 
-    snakeBody.push_back(SnakeBody(4, 4, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
-    snakeBody.push_back(SnakeBody(4, 3, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
+    snakeBody.push_back(SnakeBody(4 - newPosition.y, 5 - newPosition.x, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
+    snakeBody.push_back(SnakeBody(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
 
 
     // Set snakeHead pointer to the first element of the deque
@@ -82,6 +84,57 @@ void SnakeHandler::DetermineNewRowColumn(SnakeBody sn)
 
 }
 
+sf::Vector2i SnakeHandler::CalculateNewPosition(SnakeBody sn)
+{
+    // Use enums to handle direction alter
+
+    if (sn.movementDirection == sf::Vector2f(1, 0))
+    {
+        return sf::Vector2i(1, 0);
+
+    }
+    else if (sn.movementDirection == sf::Vector2f(-1, 0))
+    {
+        return sf::Vector2i(-1, 0);
+    }
+
+    if (sn.movementDirection == sf::Vector2f(0, 1))
+    {
+        return sf::Vector2i(0, 1);
+    }
+    else if (sn.movementDirection == sf::Vector2f(0, -1))
+    {
+        return sf::Vector2i(0, -1);
+    }
+
+}
+
+sf::Vector2i SnakeHandler::CalculateNewPosition(SnakeBody* sn)
+{
+    // Use enums to handle direction alter
+
+    if (sn->movementDirection == sf::Vector2f(1, 0))
+    {
+        return sf::Vector2i(1, 0);
+
+    }
+    else if (sn->movementDirection == sf::Vector2f(-1, 0))
+    {
+        return sf::Vector2i(-1, 0);
+    }
+
+    if (sn->movementDirection == sf::Vector2f(0, 1))
+    {
+        return sf::Vector2i(0, 1);
+    }
+    else if (sn->movementDirection == sf::Vector2f(0, -1))
+    {
+        return sf::Vector2i(0, -1);
+    }
+
+}
+
+
 void SnakeHandler::DetermineNewRowColumn(SnakeBody* sn)
 {
     // Use enums to handle direction alter
@@ -109,9 +162,6 @@ void SnakeHandler::DetermineNewRowColumn(SnakeBody* sn)
 // Add a delay so that errors do not occur
 void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesManager* gameStatesManger )
 {
-    // Update the position using the arrow operator
-    DetermineNewRowColumn(snakeHead);
-
     // Prevent too sharp turns
     if (KeydownTimeElapsed()) 
     {
@@ -200,23 +250,50 @@ void SnakeHandler::CheckIfOutOfScreen(int screenWidth, int screenHeight, GameSta
 
 void SnakeHandler::UpdateBodyPostion(GameStatesManager* gameStatesManager) 
 {
-    bool decreaseIndex = false; // Used to check if the index should be decreased based on if an element was removed or not
+    // The head is the first element in the deque
+    SnakeBody& head = snakeBody.front();
 
-    for (size_t i = snakeBody.size() - 1; i > 0; --i)
-    {
+    // Fetch the last body part, which is at the end of the deque
+    SnakeBody& lastBodyPart = snakeBody.back();
 
-        SnakeBody& currentPart = snakeBody[i];
+    // Calculate the change in position (delta) for the head based on its movement direction
+    sf::Vector2i headMovementDelta = CalculateNewPosition(head);
 
-        DetermineNewRowColumn(currentPart);
+    // Determine the new head position based on current head position and movement direction
+    sf::Vector2i newHeadPosition = sf::Vector2i(head.gridRow + headMovementDelta.y,
+        head.gridColumn + headMovementDelta.x);
 
-        IsCollidedWithSelf(currentPart, gameStatesManager); // Check if the part has collided with the head
-    }
+    // Clear the grid position of the last body part
+    GridMap::PlaceObjectInGrid(lastBodyPart.gridRow, lastBodyPart.gridColumn, 0);
+
+    // Move the last body part to the new head position and update its direction
+    lastBodyPart.SetNewSpritePosition(newHeadPosition.x, newHeadPosition.y);
+    lastBodyPart.movementDirection = head.movementDirection;
+
+    // Why do I get gridCol = 10 and gridRow = 7?
+    GridMap::PlaceObjectInGrid(lastBodyPart.gridRow, lastBodyPart.gridColumn, 2);
+
+    // Update deque: remove last body part from the back and insert it at the front as the new head
+    snakeBody.pop_back();
+    snakeBody.push_front(lastBodyPart);
+
+    // `snakeBody.front()` now represents the new head after this update
+    snakeHead = &snakeBody.front();
+
+    // Check for collisions with itself after updating the position
+    IsCollidedWithSelf(snakeHead, gameStatesManager);
+
 }
 
-void SnakeHandler::IsCollidedWithSelf(SnakeBody snakeBodyPart, GameStatesManager* gameStateManager)
+void SnakeHandler::IsCollidedWithSelf(SnakeBody* head, GameStatesManager* gameStateManager)
 {
+
+    // Check in all three directions front, left, right
+
     // Check if the head's row or col index is the same as another body parts   
-    if (snakeBodyPart.gridColumn == snakeHead->gridColumn && snakeBodyPart.gridRow == snakeHead->gridRow) {
+    // 2 indicates that there is a body part there
+    if (GridMap::gridMap[head->gridRow][head->gridColumn] == 2)
+    {
 		gameStateManager->currentGameState = GameStatesEnum::GameOver;
         return;
     }

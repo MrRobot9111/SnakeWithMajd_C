@@ -27,7 +27,7 @@ public:
 	void Grow();
 	void Shrink(); // When it hits a power-up it can shrink
 	void IsCollidedWithApple(FoodHandler& food); // Should not modify anything
-	void IsCollidedWithSelf(SnakeBody snakeBody, GameStatesManager* gameStateManager);
+	void IsCollidedWithSelf(SnakeBody* head, GameStatesManager* gameStateManager);
 	bool KeydownTimeElapsed();
 
 
@@ -38,6 +38,8 @@ public:
 	// These are handling the update of the body
 	void DetermineNewRowColumn(SnakeBody sn);
 	void DetermineNewRowColumn(SnakeBody* sn);
+	sf::Vector2i CalculateNewPosition(SnakeBody* sn);
+	sf::Vector2i CalculateNewPosition(SnakeBody sn);
 	void UpdateBodyPostion(GameStatesManager* gameStatesManager);
 
 	void Update(sf::RenderWindow& window, int screenWidth, int screenHeight, GameStatesManager* gameStatesManager); // Adjust the whole body's position when moving
