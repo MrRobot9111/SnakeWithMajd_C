@@ -31,8 +31,8 @@ public:
 	bool KeydownTimeElapsed();
 
 
-	// This should only be used on the head of the snake
-	void CheckIfOutOfScreen(int screenWidth, int screenHeight, GameStatesManager* gameStateManager);
+	// Check if whether the new position of the head is outside the screen
+	void CheckIfOutOfScreen(SnakeBody* snNewHead, sf::Vector2i* newHeadPos, GameStatesManager* gameStateManager);
 	void KeyboardInput(int screenWidth, int screenHeight, GameStatesManager* gameStateManager);
 
 	// These are handling the update of the body
@@ -46,5 +46,6 @@ public:
 	void Draw(sf::RenderWindow& window); // Access the individual body parts and draw them
 
 	void ResetSnake();
+	void ResetSnakeGrid();
 };
 

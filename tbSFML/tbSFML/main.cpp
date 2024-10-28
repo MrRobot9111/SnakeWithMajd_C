@@ -27,7 +27,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 	GridMap::InitializeGridMap();
 
     sf::RenderWindow window(sf::VideoMode(SCREEN_SIZE.x, SCREEN_SIZE.y), "TB Snake!");
-    window.setFramerateLimit(5);
+    window.setFramerateLimit(10);
     
     sf::Texture* texture = new sf::Texture();
     texture->loadFromFile("img/snake_head.png");

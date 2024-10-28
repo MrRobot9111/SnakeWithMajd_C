@@ -27,8 +27,13 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture2, sf::Texture* bodyTexture2)
 
 	sf::Vector2i newPosition = CalculateNewPosition(head);
 
-    snakeBody.push_back(SnakeBody(4 - newPosition.y, 5 - newPosition.x, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
-    snakeBody.push_back(SnakeBody(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
+    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture);
+    GridMap::PlaceObjectInGrid(sn1.gridRow, sn1.gridColumn, 2);
+    snakeBody.push_back(sn1);
+
+    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture);
+    GridMap::PlaceObjectInGrid(sn2.gridRow, sn2.gridColumn, 2);
+    snakeBody.push_back(sn2);
 
 
     // Set snakeHead pointer to the first element of the deque
@@ -38,10 +43,18 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture2, sf::Texture* bodyTexture2)
 
 }
 
+void SnakeHandler::ResetSnakeGrid() 
+{
+    for (SnakeBody sn : snakeBody) 
+    {
+        GridMap::PlaceObjectInGrid(sn.gridRow, sn.gridColumn, 0);
+    }
+}
+
 void SnakeHandler::ResetSnake() 
 {
+    ResetSnakeGrid();
     snakeBody.clear();
-	globalDirectionChanges.clear();
 
     // Is this the optimal way to reset the snake?
 
@@ -52,8 +65,14 @@ void SnakeHandler::ResetSnake()
     sf::Vector2i newPosition = CalculateNewPosition(head);
 
     // Do not forget to place these objects inside of a gridmap
-    snakeBody.push_back(SnakeBody(4 - newPosition.y, 5 - newPosition.x, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
-    snakeBody.push_back(SnakeBody(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
+
+    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture);
+    GridMap::PlaceObjectInGrid(sn1.gridRow, sn1.gridColumn, 2);
+    snakeBody.push_back(sn1);
+
+    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture);
+    GridMap::PlaceObjectInGrid(sn2.gridRow, sn2.gridColumn, 2);
+    snakeBody.push_back(sn2);
 
 
     // Set snakeHead pointer to the first element of the deque
@@ -199,38 +218,35 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesMa
             snakeHead->sprite.setRotation(0);
         }
 
-
-
-    CheckIfOutOfScreen(screenWidth, screenHeight, gameStatesManger);
 	UpdateBodyPostion(gameStatesManger);
 }
 
 
-void SnakeHandler::CheckIfOutOfScreen(int screenWidth, int screenHeight, GameStatesManager * gameStatesManager)
+void SnakeHandler::CheckIfOutOfScreen(SnakeBody* snNewHead, sf::Vector2i* newHeadPos, GameStatesManager * gameStatesManager)
 {
     // Create the ability to go out of the screen and then return from the other side
-    if (snakeHead->gridColumn > GridMap::columnsWide)
+    if (newHeadPos->y >= GridMap::columnsWide)
     {
-        snakeHead->gridColumn = 0;
-        snakeHead->movementDirection = sf::Vector2f(-1, 0); // Reverse the direction and save the new direction to global directions
-        globalDirectionChanges.push_back({ snakeHead->gridColumn, snakeHead->gridRow, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
+        // The snakes body part that is going to be the new head must have a new grid, row and col, and sprite position
+        snNewHead->gridColumn = 0;
+        newHeadPos->y = 0;
     }
-    else if (snakeHead->gridColumn < 0)
+    else if (newHeadPos->y < 0)
     {
-        snakeHead->gridColumn = GridMap::columnsWide;
-        snakeHead->movementDirection = sf::Vector2f(1, 0); // Reverse the direction and save the new direction to global directions
-        globalDirectionChanges.push_back({ snakeHead->gridColumn, snakeHead->gridRow, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
+        snNewHead->gridColumn = GridMap::columnsWide - 1;
+        newHeadPos->y = GridMap::columnsWide - 1;
+        
     }
 
-    if (snakeHead->gridRow < 0)
+    if (newHeadPos->x < 0)
     {
         gameStatesManager->currentGameState = GameStatesEnum::GameOver;
-        snakeHead->gridRow = 0;
+        newHeadPos->x = 0;
     }
-    else if (snakeHead->gridRow > GridMap::rowsWide)
+    else if (newHeadPos->x >= GridMap::rowsWide)
     {
         gameStatesManager->currentGameState = GameStatesEnum::GameOver;
-        snakeHead->gridRow = GridMap::rowsWide;
+        newHeadPos->x = GridMap::rowsWide - 1;
     }
 }
 
@@ -245,12 +261,19 @@ void SnakeHandler::UpdateBodyPostion(GameStatesManager* gameStatesManager)
     // Calculate the change in position (delta) for the head based on its movement direction
     sf::Vector2i headMovementDelta = CalculateNewPosition(head);
 
+
+
     // Determine the new head position based on current head position and movement direction
     sf::Vector2i newHeadPosition = sf::Vector2i(head.gridRow + headMovementDelta.y,
         head.gridColumn + headMovementDelta.x);
 
     // Clear the grid position of the last body part
     GridMap::PlaceObjectInGrid(lastBodyPart.gridRow, lastBodyPart.gridColumn, 0);
+
+    // Check if the head is going to be outside of the grid
+    CheckIfOutOfScreen(&lastBodyPart, &newHeadPosition, gameStatesManager);
+
+
 
     // Check the position of were the head is going to be placed before it is placed there
     IsCollidedWithSelf(gameStatesManager, newHeadPosition);
@@ -310,7 +333,13 @@ void SnakeHandler::Grow()
 
 	// Calculate the new position by using the direction of the last body part if the direction is x+ then the body part should be column - 1
 
-    SnakeBody bodyPart(lastBodyPart.gridColumn, lastBodyPart.gridRow, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, bodyTexture);
+    sf::Vector2i newPosition = CalculateNewPosition(lastBodyPart);
+
+    // Set the position based on the snakes movement and the last body parts position
+    // Switch the placement of gridCol and row
+
+    SnakeBody bodyPart(lastBodyPart.gridRow - newPosition.y, lastBodyPart.gridColumn - newPosition.x, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, bodyTexture);
+    GridMap::PlaceObjectInGrid(lastBodyPart.gridRow, lastBodyPart.gridColumn, 2);
     snakeBody.push_back(bodyPart);
 }
 
