@@ -19,7 +19,7 @@ SnakeBody::SnakeBody(int gridRowIN, int gridColumnIN,  float _rotation, float _s
     // Set the origin to the center of the sprite to prevent jumping on rotation
     sprite.setOrigin(texture->getSize().x / 2.f, texture->getSize().y / 2.f);
 
-	sprite.setPosition(gridColumn * SNAKE_BODY_SIZE.x, gridRow * SNAKE_BODY_SIZE.y);
+	sprite.setPosition(gridColumn * SNAKE_BODY_SIZE.x + (SNAKE_BODY_SIZE.x / 2.f), gridRow * SNAKE_BODY_SIZE.y + (SNAKE_BODY_SIZE.y / 2.f));
     // Set the initial position and rotation of the sprite
     sprite.setRotation(_rotation);
 
@@ -30,7 +30,7 @@ void SnakeBody::SetNewSpritePosition(int newRow, int newCol)
 {
 	gridRow = newRow;
 	gridColumn = newCol;
-    sprite.setPosition(gridColumn * SNAKE_BODY_SIZE.x, gridRow * SNAKE_BODY_SIZE.y);
+    sprite.setPosition(gridColumn * SNAKE_BODY_SIZE.x + (SNAKE_BODY_SIZE.x / 2.f), gridRow * SNAKE_BODY_SIZE.y + (SNAKE_BODY_SIZE.y / 2.f));
 }
 
 

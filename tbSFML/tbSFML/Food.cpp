@@ -15,7 +15,7 @@ Food::Food(int rowIndexIN, int columnIndexIN,  sf::Vector2f size, sf::Texture* _
     sprite.setScale(size.x / texture->getSize().x, size.y / texture->getSize().y);
     sprite.setOrigin(texture->getSize().x / 2, texture->getSize().y / 2);
 
-    sprite.setPosition(columnIndex * APPLE_SIZE.x, rowIndex * APPLE_SIZE.y);
+    sprite.setPosition(columnIndex * APPLE_SIZE.x + (APPLE_SIZE.x / 2.f), rowIndex * APPLE_SIZE.y + (APPLE_SIZE.y / 2.f));
     // Set the initial position and rotation of the sprite
     sprite.setRotation(rotation);
 
