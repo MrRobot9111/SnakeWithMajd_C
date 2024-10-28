@@ -45,12 +45,15 @@ void SnakeHandler::ResetSnake()
 
     // Is this the optimal way to reset the snake?
 
-    SnakeBody head(4, 5, 270, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
+    SnakeBody head(4, 5, 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
+    GridMap::PlaceObjectInGrid(head.gridRow, head.gridColumn, 2);
     snakeBody.push_back(head);
 
+    sf::Vector2i newPosition = CalculateNewPosition(head);
 
-    snakeBody.push_back(SnakeBody(4, 4, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
-    snakeBody.push_back(SnakeBody(4, 3, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
+    // Do not forget to place these objects inside of a gridmap
+    snakeBody.push_back(SnakeBody(4 - newPosition.y, 5 - newPosition.x, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
+    snakeBody.push_back(SnakeBody(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture));
 
 
     // Set snakeHead pointer to the first element of the deque
@@ -162,9 +165,7 @@ void SnakeHandler::DetermineNewRowColumn(SnakeBody* sn)
 // Add a delay so that errors do not occur
 void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesManager* gameStatesManger )
 {
-    // Prevent too sharp turns
-    if (KeydownTimeElapsed()) 
-    {
+
         // Ensure that the snake cannot do a 180 degree turn from current rotation, and that it is not already traveling in that direction
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && snakeHead->movementDirection != sf::Vector2f(1, 0) && snakeHead->movementDirection != sf::Vector2f(-1, 0))
         {
@@ -173,9 +174,6 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesMa
             snakeHead->movementDirection = sf::Vector2f(-1, 0);
             snakeHead->sprite.setRotation(90);
 
-			// Add the changes to the deque, so that the other body parts can follow
-
-			globalDirectionChanges.push_back({ snakeHead->gridColumn, snakeHead->gridRow, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && snakeHead->movementDirection != sf::Vector2f(-1, 0) && snakeHead->movementDirection != sf::Vector2f(1, 0))
         {
@@ -183,10 +181,6 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesMa
 
             snakeHead->movementDirection = sf::Vector2f(1, 0);
             snakeHead->sprite.setRotation(270);
-
-            // Add the changes to the deque, so that the other body parts can follow
-
-            globalDirectionChanges.push_back({ snakeHead->gridColumn, snakeHead->gridRow, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && snakeHead->movementDirection != sf::Vector2f(0, 1) && snakeHead->movementDirection != sf::Vector2f(0, -1))
@@ -197,21 +191,13 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesMa
             snakeHead->movementDirection = sf::Vector2f(0, -1);
             snakeHead->sprite.setRotation(180);
 
-            // Add the changes to the deque, so that the other body parts can follow
-
-            globalDirectionChanges.push_back({ snakeHead->gridColumn, snakeHead->gridRow, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && snakeHead->movementDirection != sf::Vector2f(0, -1) && snakeHead->movementDirection != sf::Vector2f(0, 1))
         {
 
             snakeHead->movementDirection = sf::Vector2f(0, 1);
             snakeHead->sprite.setRotation(0);
-
-            // Add the changes to the deque, so that the other body parts can follow
-
-            globalDirectionChanges.push_back({ snakeHead->gridColumn, snakeHead->gridRow, snakeHead->movementDirection, snakeHead->sprite.getRotation() });
         }
-    }
 
 
 
