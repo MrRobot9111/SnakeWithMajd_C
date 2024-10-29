@@ -21,17 +21,17 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture2, sf::Texture* bodyTexture2)
     this->bodyTexture->loadFromFile("img/circleTexture2.png");
 
     // Initialize the snake body with only its head
-    SnakeBody head(4, 5, 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
+    SnakeBody head(4, 5, 0, sf::Vector2f(1, 0), headTexture);
 	GridMap::PlaceObjectInGrid(head.gridRow, head.gridColumn, 2);
     snakeBody.push_back(head);
 
 	sf::Vector2i newPosition = CalculateNewPosition(head);
 
-    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture);
+    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, sf::Vector2f(1, 0), this->bodyTexture);
     GridMap::PlaceObjectInGrid(sn1.gridRow, sn1.gridColumn, 2);
     snakeBody.push_back(sn1);
 
-    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture);
+    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, sf::Vector2f(1, 0), this->bodyTexture);
     GridMap::PlaceObjectInGrid(sn2.gridRow, sn2.gridColumn, 2);
     snakeBody.push_back(sn2);
 
@@ -58,7 +58,7 @@ void SnakeHandler::ResetSnake()
 
     // Is this the optimal way to reset the snake?
 
-    SnakeBody head(4, 5, 0, SNAKE_SPEED, sf::Vector2f(1, 0), headTexture);
+    SnakeBody head(4, 5, 0, sf::Vector2f(1, 0), headTexture);
     GridMap::PlaceObjectInGrid(head.gridRow, head.gridColumn, 2);
     snakeBody.push_back(head);
 
@@ -66,11 +66,11 @@ void SnakeHandler::ResetSnake()
 
     // Do not forget to place these objects inside of a gridmap
 
-    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture);
+    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, sf::Vector2f(1, 0), this->bodyTexture);
     GridMap::PlaceObjectInGrid(sn1.gridRow, sn1.gridColumn, 2);
     snakeBody.push_back(sn1);
 
-    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, SNAKE_SPEED, sf::Vector2f(1, 0), this->bodyTexture);
+    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, sf::Vector2f(1, 0), this->bodyTexture);
     GridMap::PlaceObjectInGrid(sn2.gridRow, sn2.gridColumn, 2);
     snakeBody.push_back(sn2);
 
@@ -338,7 +338,7 @@ void SnakeHandler::Grow()
     // Set the position based on the snakes movement and the last body parts position
     // Switch the placement of gridCol and row
 
-    SnakeBody bodyPart(lastBodyPart.gridRow - newPosition.y, lastBodyPart.gridColumn - newPosition.x, lastBodyPart.sprite.getRotation(), SNAKE_SPEED, lastBodyPart.movementDirection, bodyTexture);
+    SnakeBody bodyPart(lastBodyPart.gridRow - newPosition.y, lastBodyPart.gridColumn - newPosition.x, lastBodyPart.sprite.getRotation(), lastBodyPart.movementDirection, bodyTexture);
     GridMap::PlaceObjectInGrid(lastBodyPart.gridRow, lastBodyPart.gridColumn, 2);
     snakeBody.push_back(bodyPart);
 }

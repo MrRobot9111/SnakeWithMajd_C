@@ -16,7 +16,6 @@ class SnakeHandler
 public:
 	SnakeBody* snakeHead; 
 	std::deque<SnakeBody> snakeBody; // The first element is always the head of the snake
-	std::deque<DirectionChange> globalDirectionChanges; // Store the positions of the head's turns
 	sf::Texture* headTexture;
 	sf::Texture* bodyTexture;
 private:
