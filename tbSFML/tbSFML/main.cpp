@@ -45,11 +45,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
     GameOver GameOverMenuItems(window.getSize().x, window.getSize().y);
     
+	GridMap::DrawGridMap(window);
 
     // Set the state of the game
     GameStatesManager* gameStatesManager = new GameStatesManager();
     gameStatesManager->SetState(GameStatesEnum::MainMenu);
-
 
     while (window.isOpen())
     {
@@ -108,13 +108,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         // Render based on the current game state
         if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu)
         {
-            window.clear(sf::Color::Cyan);
+            window.clear(sf::Color::Black);
             menu.draw(window);
             window.display();
         }
         else if (gameStatesManager->currentGameState == GameStatesEnum::Playing)
         {
-            window.clear(sf::Color::Cyan);
+			sf::Color gray(75, 75, 75);
+            window.clear(gray);
+            GridMap::DrawGridMap(window);  
             snakeHandler.IsCollidedWithApple(foodHandler);
             foodHandler.EnsureAmountOfFoodOnScreen(5);
             snakeHandler.Update(window, SCREEN_SIZE.x, SCREEN_SIZE.y, gameStatesManager);
@@ -123,7 +125,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         }
         else if (gameStatesManager->currentGameState == GameStatesEnum::GameOver)
         {
-            window.clear(sf::Color::Cyan);
+            window.clear(sf::Color::Black);
             GameOverMenuItems.draw(window);
             window.display();
         }
