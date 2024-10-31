@@ -2,7 +2,7 @@
 #include <vector>
 #include "Food.h"
 #include <deque>
-#include "DirectionChange.h"
+#include "DirectionEnum.h"
 
 class SnakeBody
 {
@@ -12,12 +12,12 @@ public:
 
 	sf::Sprite sprite;
 	sf::Texture* texture;
-	sf::Vector2f movementDirection;
+	DirectionEnum movementDirection;
 
 	float rotation;
 public:
 	SnakeBody();
-	SnakeBody(int gridRowIN, int gridColumnIN, float _rotation, sf::Vector2f _movementDirection, sf::Texture* _texture);
+	SnakeBody(int gridRowIN, int gridColumnIN, float _rotation, DirectionEnum _movementDirection, sf::Texture* _texture);
 
 	void SetNewSpritePosition(int addRow, int addCol);
 	void Update(int screenWidth, int screenHeight);

@@ -3,7 +3,7 @@
 #include "GridMap.h"
 #include <optional>
 
-SnakeBody::SnakeBody(int gridRowIN, int gridColumnIN,  float _rotation, sf::Vector2f _movementDirection, sf::Texture* _texture)
+SnakeBody::SnakeBody(int gridRowIN, int gridColumnIN,  float _rotation, DirectionEnum _movementDirection, sf::Texture* _texture)
 {
     // Check if this is correct
     movementDirection = _movementDirection;   

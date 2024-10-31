@@ -21,17 +21,17 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture2, sf::Texture* bodyTexture2)
     this->bodyTexture->loadFromFile("img/circleTexture2.png");
 
     // Initialize the snake body with only its head
-    SnakeBody head(4, 5, 0, sf::Vector2f(1, 0), headTexture);
+    SnakeBody head(4, 5, 0, DirectionEnum::Right, headTexture);
 	GridMap::PlaceObjectInGrid(head.gridRow, head.gridColumn, 2);
     snakeBody.push_back(head);
 
-	sf::Vector2i newPosition = CalculateNewPosition(head);
+	sf::Vector2i newPosition = DirectionToVector(head.movementDirection);
 
-    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, sf::Vector2f(1, 0), this->bodyTexture);
+    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, DirectionEnum::Right, this->bodyTexture);
     GridMap::PlaceObjectInGrid(sn1.gridRow, sn1.gridColumn, 2);
     snakeBody.push_back(sn1);
 
-    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, sf::Vector2f(1, 0), this->bodyTexture);
+    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, DirectionEnum::Right, this->bodyTexture);
     GridMap::PlaceObjectInGrid(sn2.gridRow, sn2.gridColumn, 2);
     snakeBody.push_back(sn2);
 
@@ -58,19 +58,19 @@ void SnakeHandler::ResetSnake()
 
     // Is this the optimal way to reset the snake?
 
-    SnakeBody head(4, 5, 0, sf::Vector2f(1, 0), headTexture);
+    SnakeBody head(4, 5, 0, DirectionEnum::Right, headTexture);
     GridMap::PlaceObjectInGrid(head.gridRow, head.gridColumn, 2);
     snakeBody.push_back(head);
 
-    sf::Vector2i newPosition = CalculateNewPosition(head);
+    sf::Vector2i newPosition = DirectionToVector(head.movementDirection);
 
     // Do not forget to place these objects inside of a gridmap
 
-    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, sf::Vector2f(1, 0), this->bodyTexture);
+    SnakeBody sn1(4 - newPosition.y, 5 - newPosition.x, 0, DirectionEnum::Right, this->bodyTexture);
     GridMap::PlaceObjectInGrid(sn1.gridRow, sn1.gridColumn, 2);
     snakeBody.push_back(sn1);
 
-    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, sf::Vector2f(1, 0), this->bodyTexture);
+    SnakeBody sn2(4 - newPosition.y * 2, 5 - newPosition.x * 2, 0, DirectionEnum::Right, this->bodyTexture);
     GridMap::PlaceObjectInGrid(sn2.gridRow, sn2.gridColumn, 2);
     snakeBody.push_back(sn2);
 
@@ -81,77 +81,48 @@ void SnakeHandler::ResetSnake()
 
 }
 
+sf::Vector2i SnakeHandler::DirectionToVector(DirectionEnum direction) 
+{
+    switch (direction) 
+    {
+    case DirectionEnum::Up:
+        return sf::Vector2i(0, -1); // Move up (decrease y)
+
+    case DirectionEnum::Down:
+        return sf::Vector2i(0, 1);  // Move down (increase y)
+
+    case DirectionEnum::Left:
+        return sf::Vector2i(-1, 0); // Move left (decrease x)
+
+    case DirectionEnum::Right:
+        return sf::Vector2i(1, 0);  // Move right (increase x)
+
+    default:
+        return sf::Vector2i(0, 0);  // No movement for an undefined direction
+    }
+}
+
 void SnakeHandler::DetermineNewRowColumn(SnakeBody sn) 
 {
     // Use enums to handle direction alter
 
-    if (sn.movementDirection == sf::Vector2f(1, 0)) 
+    if (sn.movementDirection == DirectionEnum::Right) 
     {
         sn.gridColumn++;
         
     }
-    else if (sn.movementDirection == sf::Vector2f(-1, 0)) 
+    else if (sn.movementDirection == DirectionEnum::Left) 
     {
         sn.gridColumn--;
     }
 
-    if (sn.movementDirection == sf::Vector2f(0, 1))
+    if (sn.movementDirection == DirectionEnum::Down)
     {
         sn.gridRow++;
     }
-    else if (sn.movementDirection == sf::Vector2f(0, -1))
+    else if (sn.movementDirection == DirectionEnum::Up)
     {
         sn.gridRow--;
-    }
-
-}
-
-sf::Vector2i SnakeHandler::CalculateNewPosition(SnakeBody sn)
-{
-    // Use enums to handle direction alter
-
-    if (sn.movementDirection == sf::Vector2f(1, 0))
-    {
-        return sf::Vector2i(1, 0);
-
-    }
-    else if (sn.movementDirection == sf::Vector2f(-1, 0))
-    {
-        return sf::Vector2i(-1, 0);
-    }
-
-    if (sn.movementDirection == sf::Vector2f(0, 1))
-    {
-        return sf::Vector2i(0, 1);
-    }
-    else if (sn.movementDirection == sf::Vector2f(0, -1))
-    {
-        return sf::Vector2i(0, -1);
-    }
-
-}
-
-sf::Vector2i SnakeHandler::CalculateNewPosition(SnakeBody* sn)
-{
-    // Use enums to handle direction alter
-
-    if (sn->movementDirection == sf::Vector2f(1, 0))
-    {
-        return sf::Vector2i(1, 0);
-
-    }
-    else if (sn->movementDirection == sf::Vector2f(-1, 0))
-    {
-        return sf::Vector2i(-1, 0);
-    }
-
-    if (sn->movementDirection == sf::Vector2f(0, 1))
-    {
-        return sf::Vector2i(0, 1);
-    }
-    else if (sn->movementDirection == sf::Vector2f(0, -1))
-    {
-        return sf::Vector2i(0, -1);
     }
 
 }
@@ -161,20 +132,20 @@ void SnakeHandler::DetermineNewRowColumn(SnakeBody* sn)
 {
     // Use enums to handle direction alter
 
-    if (sn->movementDirection == sf::Vector2f(1, 0))
+    if (sn->movementDirection == DirectionEnum::Right)
     {
         sn->gridColumn++;
     }
-    else if (sn->movementDirection == sf::Vector2f(-1, 0))
+    else if (sn->movementDirection == DirectionEnum::Left)
     {
         sn->gridColumn--;
     }
 
-    if (sn->movementDirection == sf::Vector2f(0, 1))
+    if (sn->movementDirection == DirectionEnum::Down)
     {
         sn->gridRow++;
     }
-    else if (sn->movementDirection == sf::Vector2f(0, -1))
+    else if (sn->movementDirection == DirectionEnum::Up)
     {
         sn->gridRow--;
     }
@@ -186,35 +157,30 @@ void SnakeHandler::KeyboardInput(int screenWidth, int screenHeight, GameStatesMa
 {
 
         // Ensure that the snake cannot do a 180 degree turn from current rotation, and that it is not already traveling in that direction
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && snakeHead->movementDirection != sf::Vector2f(1, 0) && snakeHead->movementDirection != sf::Vector2f(-1, 0))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) && snakeHead->movementDirection != DirectionEnum::Right && snakeHead->movementDirection != DirectionEnum::Left)
         {
-            // Store the old movement direction, and the position of the turn
-
-            snakeHead->movementDirection = sf::Vector2f(-1, 0);
+            snakeHead->movementDirection = DirectionEnum::Left;
             snakeHead->sprite.setRotation(90);
 
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && snakeHead->movementDirection != sf::Vector2f(-1, 0) && snakeHead->movementDirection != sf::Vector2f(1, 0))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && snakeHead->movementDirection != DirectionEnum::Left && snakeHead->movementDirection != DirectionEnum::Right)
         {
 
 
-            snakeHead->movementDirection = sf::Vector2f(1, 0);
+            snakeHead->movementDirection = DirectionEnum::Right;
             snakeHead->sprite.setRotation(270);
         }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && snakeHead->movementDirection != sf::Vector2f(0, 1) && snakeHead->movementDirection != sf::Vector2f(0, -1))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && snakeHead->movementDirection != DirectionEnum::Down && snakeHead->movementDirection != DirectionEnum::Up)
         {
-
-
-
-            snakeHead->movementDirection = sf::Vector2f(0, -1);
+            snakeHead->movementDirection = DirectionEnum::Up;
             snakeHead->sprite.setRotation(180);
 
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && snakeHead->movementDirection != sf::Vector2f(0, -1) && snakeHead->movementDirection != sf::Vector2f(0, 1))
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && snakeHead->movementDirection != DirectionEnum::Down && snakeHead->movementDirection != DirectionEnum::Up)
         {
 
-            snakeHead->movementDirection = sf::Vector2f(0, 1);
+            snakeHead->movementDirection = DirectionEnum::Down;
             snakeHead->sprite.setRotation(0);
         }
 
@@ -259,7 +225,7 @@ void SnakeHandler::UpdateBodyPostion(GameStatesManager* gameStatesManager)
     SnakeBody& lastBodyPart = snakeBody.back();
 
     // Calculate the change in position (delta) for the head based on its movement direction
-    sf::Vector2i headMovementDelta = CalculateNewPosition(head);
+    sf::Vector2i headMovementDelta = DirectionToVector(head.movementDirection);
 
 
 
@@ -333,7 +299,7 @@ void SnakeHandler::Grow()
 
 	// Calculate the new position by using the direction of the last body part if the direction is x+ then the body part should be column - 1
 
-    sf::Vector2i newPosition = CalculateNewPosition(lastBodyPart);
+    sf::Vector2i newPosition = DirectionToVector(lastBodyPart.movementDirection);
 
     // Set the position based on the snakes movement and the last body parts position
     // Switch the placement of gridCol and row
@@ -353,21 +319,6 @@ void SnakeHandler::Update(sf::RenderWindow& window, int screenWidth, int screenH
 	}
 
     Draw(window);
-}
-
-bool SnakeHandler::KeydownTimeElapsed() 
-{
-
-    // Get the elapsed time since the last key press
-    sf::Time elapsed = clock.getElapsedTime();
-
-    if (elapsed.asSeconds() >= MOVEMENT_COOLDOWN_TIME)
-    {
-        clock.restart();
-		return true;
-
-	}
-	return false;
 }
 
 void SnakeHandler::Draw(sf::RenderWindow& window)

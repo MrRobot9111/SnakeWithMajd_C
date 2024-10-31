@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DirectionChange.h" />
+    <ClInclude Include="DirectionEnum.h" />
     <ClInclude Include="Food.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="CreateObject.h" />
