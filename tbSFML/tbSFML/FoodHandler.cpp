@@ -10,7 +10,6 @@ void FoodHandler::SpawnFood(int spawnAmount)
 {
 
 	texture = new sf::Texture();
-	// Load texture for the head, if needed
 	texture->loadFromFile("img/apple2.png");
 
 

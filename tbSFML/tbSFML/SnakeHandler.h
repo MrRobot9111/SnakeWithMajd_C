@@ -16,15 +16,14 @@ class SnakeHandler
 
 public:
 	SnakeBody* snakeHead; 
-	std::deque<SnakeBody> snakeBody; // The first element is always the head of the snake
+	std::deque<SnakeBody> snakeBody;
 	sf::Texture* headTexture;
 	sf::Texture* bodyTexture;
 
 public:
 	SnakeHandler(sf::Texture* headtexture, sf::Texture* bodyTexture); // Create the head inside the constructor
 	void Grow();
-	void Shrink(); // When it hits a power-up it can shrink
-	void IsCollidedWithApple(FoodHandler& food); // Should not modify anything
+	void IsCollidedWithApple(FoodHandler& food);
 	void IsCollidedWithSelf(GameStatesManager* gameStateManager, sf::Vector2i newHeadPos);
 
 

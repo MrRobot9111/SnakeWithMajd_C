@@ -26,7 +26,7 @@ void Food::Draw(sf::RenderWindow& window)
     window.draw(sprite); 
 }
 
-// Comparison operator
+// Comparison operator - each row[col] is unique
 bool Food::operator==(const Food& other) const {
     return columnIndex == other.columnIndex && rowIndex == other.rowIndex;
 }
