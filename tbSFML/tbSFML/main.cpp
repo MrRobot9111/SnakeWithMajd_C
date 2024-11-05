@@ -16,6 +16,7 @@
 #include "GameStatesEnum.h"
 #include "GameStatesManager.h"
 #include "GridMap.h"
+#include "LoadData.h"
 
 
 
@@ -41,7 +42,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
     foodHandler.SpawnFood(5);
 
-    StartMenu menu(window.getSize().x, window.getSize().y);
+    StartMenu menu(window.getSize().x, window.getSize().y, sf::Color::Black);
 
     GameOver GameOverMenuItems(window.getSize().x, window.getSize().y);
     
@@ -51,8 +52,24 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     GameStatesManager* gameStatesManager = new GameStatesManager();
     gameStatesManager->SetState(GameStatesEnum::MainMenu);
 
+    // Loading Screen
+
+    bool loading = true;
+    LoadData loader;
+
+    loader.StartLoading(&loading);
+
     while (window.isOpen())
     {
+
+        if (loading)
+        {
+            menu.SetColor(sf::Color::Black); // Show loading color
+            window.clear(sf::Color::Black);
+            menu.draw(window); // Display loading screen
+            window.display();
+        }
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -62,7 +79,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
             }
 
             // Handle events based on the current game state
-            if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu)
+            if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu && !loading)
             {
                 switch (event.type)
                 {
@@ -106,8 +123,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         }
 
         // Render based on the current game state
-        if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu)
+        if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu && !loading)
         {
+            menu.SetColor(sf::Color::White);
             window.clear(sf::Color::Black);
             menu.draw(window);
             window.display();
