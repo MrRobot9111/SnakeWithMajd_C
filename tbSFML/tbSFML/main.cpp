@@ -55,12 +55,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     // Loading Screen
 
     bool loading = true;
-    LoadData loader;
+    LoadData loader("img/snake_loading.png");
 
     loader.StartLoading(&loading);
 
     while (window.isOpen())
     {
+
+        // Calculate deltaTime for smooth rotation
+        float deltaTime = loader.clock.restart().asSeconds();
 
         if (loading)
         {
