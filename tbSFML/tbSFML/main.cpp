@@ -64,9 +64,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 
         if (loading)
         {
-            menu.SetColor(sf::Color::Black); // Show loading color
+            menu.SetColor(sf::Color::White); // Show loading color
             window.clear(sf::Color::Black);
-            menu.draw(window); // Display loading screen
+            //menu.draw(window); // Display loading screen
             window.display();
         }
 
@@ -125,7 +125,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         // Render based on the current game state
         if (gameStatesManager->currentGameState == GameStatesEnum::MainMenu && !loading)
         {
-            menu.SetColor(sf::Color::White);
             window.clear(sf::Color::Black);
             menu.draw(window);
             window.display();
