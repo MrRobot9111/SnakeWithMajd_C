@@ -48,6 +48,7 @@ sf::Vector2i FoodHandler::GenerateRandomCoordinates()
 
 void FoodHandler::RemoveApple(Food food) 
 {
+	foodEaten++;
 	foodOnScreen.remove(food);
 	GridMap::PlaceObjectInGrid(food.rowIndex, food.columnIndex, 0);
 	EnsureAmountOfFoodOnScreen(5);

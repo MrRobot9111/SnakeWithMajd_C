@@ -9,6 +9,7 @@ class FoodHandler
 {
 public:
 	std::list<Food> foodOnScreen;
+	int foodEaten;
 
 private:
 	sf::Vector2f screenSize;
