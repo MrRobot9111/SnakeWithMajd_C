@@ -15,7 +15,7 @@ SnakeHandler::SnakeHandler(sf::Texture* headTexture2, sf::Texture* bodyTexture2)
 
     this->headTexture = new sf::Texture();
 
-    this->headTexture->loadFromFile("img/snake_head.png");
+    this->headTexture->loadFromFile("img/circleTexture2.png");
 
     this->bodyTexture = new sf::Texture();
     this->bodyTexture->loadFromFile("img/circleTexture2.png");

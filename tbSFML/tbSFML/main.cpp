@@ -55,7 +55,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     // Loading Screen
 
     bool loading = true;
-    LoadData loader("img/snake_loading.png");
+
+    sf::Texture* textureLoadinScreen = new sf::Texture();
+    textureLoadinScreen->loadFromFile("img/snake_head.png");
+    LoadData loader(textureLoadinScreen);
 
     loader.StartLoading(&loading);
 
@@ -69,6 +72,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
         {
             menu.SetColor(sf::Color::White); // Show loading color
             window.clear(sf::Color::Black);
+			window.draw(loader.snakeSprite);
+            loader.RotateSnake(deltaTime);
             //menu.draw(window); // Display loading screen
             window.display();
         }

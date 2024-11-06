@@ -1,14 +1,19 @@
 #include "LoadData.h"
 
 
-    LoadData::LoadData(std::string filePath, float _rotationSpeed) 
+    LoadData::LoadData(sf::Texture* _texture, float _rotationSpeed)
     {
-        // Load texture and create sprite
-        texture.loadFromFile(filePath);
-        snakeSprite.setTexture(texture);
+        // Image is not being loaded, but why
+
+        if (!_texture) {
+            throw std::runtime_error("Texture pointer is null!");
+        }
+  
+		texture = _texture;
+        snakeSprite.setTexture(*texture);
 
         // Set origin to center of sprite for smooth rotation
-        sf::Vector2u textureSize = texture.getSize();
+        sf::Vector2u textureSize = texture->getSize();
         snakeSprite.setOrigin(textureSize.x / 2, textureSize.y / 2);
         snakeSprite.setPosition(SCREEN_SIZE.x / 2, SCREEN_SIZE.y / 2);
 

@@ -11,7 +11,7 @@
 class LoadData {
 public:
 
-    LoadData(std::string filePath, float rotationSpeed = 72.0f);
+    LoadData(sf::Texture* _texture, float rotationSpeed = 72.0f);
 
     void RotateSnake(float deltaTime);
     void LoadMethod(bool* loading);
@@ -26,6 +26,6 @@ public:
 
 private:
 
-    sf::Texture texture;    // Keep texture as a member variable to ensure it's valid
+    sf::Texture* texture;    // Keep texture as a member variable to ensure it's valid
     std::thread t;          // Thread to manage loading
 };
